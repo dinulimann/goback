@@ -1,75 +1,65 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 // User represents a user in the system
 type User struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name" binding:"required"`
-	Email     string    `json:"email" binding:"required,email"`
+	ID        uint      `json:"id" gorm:"primaryKey"`
+	Name      string    `json:"name" binding:"required" gorm:"type:varchar(100);not null"`
+	Email     string    `json:"email" binding:"required,email" gorm:"type:varchar(100);uniqueIndex;not null"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// UserStore is an in-memory store for users (in production, use a database)
-type UserStore struct {
-	users  map[int]*User
-	nextID int
+// TableName specifies the table name for User model
+func (User) TableName() string {
+	return "users"
 }
 
-// NewUserStore creates a new user store
-func NewUserStore() *UserStore {
-	return &UserStore{
-		users:  make(map[int]*User),
-		nextID: 1,
+// UserRepository handles database operations for users
+type UserRepository struct {
+	db *gorm.DB
+}
+
+// NewUserRepository creates a new user repository
+func NewUserRepository(db *gorm.DB) *UserRepository {
+	return &UserRepository{
+		db: db,
 	}
 }
 
-// Create adds a new user
-func (s *UserStore) Create(user *User) *User {
-	user.ID = s.nextID
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
-	s.users[user.ID] = user
-	s.nextID++
-	return user
+// Create adds a new user to database
+func (r *UserRepository) Create(user *User) error {
+	return r.db.Create(user).Error
 }
 
-// GetAll returns all users
-func (s *UserStore) GetAll() []*User {
-	users := make([]*User, 0, len(s.users))
-	for _, user := range s.users {
-		users = append(users, user)
+// GetAll returns all users from database
+func (r *UserRepository) GetAll() ([]User, error) {
+	var users []User
+	err := r.db.Order("id desc").Find(&users).Error
+	return users, err
+}
+
+// GetByID returns a user by ID from database
+func (r *UserRepository) GetByID(id uint) (*User, error) {
+	var user User
+	err := r.db.First(&user, id).Error
+	if err != nil {
+		return nil, err
 	}
-	return users
+	return &user, nil
 }
 
-// GetByID returns a user by ID
-func (s *UserStore) GetByID(id int) (*User, bool) {
-	user, exists := s.users[id]
-	return user, exists
+// Update updates a user in database
+func (r *UserRepository) Update(user *User) error {
+	return r.db.Save(user).Error
 }
 
-// Update updates a user
-func (s *UserStore) Update(id int, updatedUser *User) (*User, bool) {
-	user, exists := s.users[id]
-	if !exists {
-		return nil, false
-	}
-
-	user.Name = updatedUser.Name
-	user.Email = updatedUser.Email
-	user.UpdatedAt = time.Now()
-
-	return user, true
-}
-
-// Delete removes a user
-func (s *UserStore) Delete(id int) bool {
-	_, exists := s.users[id]
-	if !exists {
-		return false
-	}
-	delete(s.users, id)
-	return true
+// Delete removes a user from database
+func (r *UserRepository) Delete(id uint) error {
+	return r.db.Delete(&User{}, id).Error
 }

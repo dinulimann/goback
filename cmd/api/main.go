@@ -4,6 +4,8 @@ import (
 	"log"
 
 	"github.com/dinulimann/goback/config"
+	"github.com/dinulimann/goback/database"
+	"github.com/dinulimann/goback/models"
 	"github.com/dinulimann/goback/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -18,6 +20,20 @@ func main() {
 	// Initialize config
 	cfg := config.NewConfig()
 
+	// Connect to database
+	if err := database.Connect(cfg); err != nil {
+		log.Fatal("Failed to connect to database:", err)
+	}
+
+	// Get database instance
+	db := database.GetDB()
+
+	// Auto migrate database schema
+	if err := db.AutoMigrate(&models.User{}); err != nil {
+		log.Fatal("Failed to migrate database:", err)
+	}
+	log.Println("Database migration completed")
+
 	// Set Gin mode
 	if cfg.Environment == "production" {
 		gin.SetMode(gin.ReleaseMode)
@@ -26,8 +42,8 @@ func main() {
 	// Initialize router
 	router := gin.Default()
 
-	// Setup routes
-	routes.SetupRoutes(router)
+	// Setup routes with database
+	routes.SetupRoutes(router, db)
 
 	// Start server
 	port := cfg.Port

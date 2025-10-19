@@ -1,20 +1,28 @@
-# GoBack - Simple Backend API
+# GoBack - User Management System
 
-Backend sederhana menggunakan Golang dengan Gin Framework.
+Fullstack aplikasi User Management dengan Golang Backend dan React Frontend.
 
 ## Fitur
 
+### Backend (Golang + Gin)
 - RESTful API untuk manajemen User (CRUD)
 - Middleware untuk CORS dan Logging
 - Configuration management dengan environment variables
 - Struktur project yang terorganisir
 - Health check endpoint
 
+### Frontend (React + Vite)
+- User interface untuk manajemen user
+- Create, Read, Update, Delete users
+- Responsive design
+- Real-time form validation
+- Integration dengan backend API
+
 ## Struktur Project
 
 ```
 goback/
-├── cmd/api/           # Entry point aplikasi
+├── cmd/api/           # Backend entry point
 │   └── main.go
 ├── config/            # Configuration management
 │   └── config.go
@@ -28,7 +36,17 @@ goback/
 │   └── user.go
 ├── routes/            # Route definitions
 │   └── routes.go
-├── utils/             # Utility functions
+├── frontend/          # React Frontend
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── UserForm.jsx
+│   │   │   └── UserList.jsx
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── package.json
+│   └── README.md
 ├── .env.example       # Environment variables example
 ├── go.mod             # Go module file
 └── README.md
@@ -37,27 +55,77 @@ goback/
 ## Prerequisites
 
 - Go 1.21.6 atau lebih baru
+- Node.js 18+ dan npm
+- PostgreSQL 14+
 - Git
 
-## Instalasi
+## Instalasi & Menjalankan Aplikasi
 
-1. Clone repository ini
-2. Copy file `.env.example` menjadi `.env`:
-   ```bash
-   cp .env.example .env
-   ```
+### 0. Setup PostgreSQL (WAJIB)
 
-3. Install dependencies:
-   ```bash
-   go mod tidy
-   ```
+Aplikasi sekarang menggunakan PostgreSQL untuk data persistence.
 
-4. Jalankan aplikasi:
-   ```bash
-   go run cmd/api/main.go
-   ```
+**Lihat panduan lengkap:** [POSTGRESQL_SETUP.md](POSTGRESQL_SETUP.md)
 
-Server akan berjalan di `http://localhost:8080`
+**Quick Setup:**
+```bash
+# 1. Install PostgreSQL (sesuai OS Anda)
+
+# 2. Buat database
+psql postgres
+CREATE DATABASE goback_db;
+\q
+
+# 3. Copy dan edit .env
+cp .env.example .env
+# Edit .env dengan password postgres Anda
+```
+
+### 1. Backend (Golang)
+
+```bash
+# Install dependencies
+go mod tidy
+
+# Setup environment variables
+cp .env.example .env
+# Edit .env dengan konfigurasi PostgreSQL Anda
+
+# Jalankan backend server
+go run cmd/api/main.go
+```
+
+Output yang diharapkan:
+```
+Database connection established successfully
+Database migration completed
+Server starting on port 8080
+```
+
+Backend akan berjalan di `http://localhost:8080`
+
+### 2. Frontend (React)
+
+Buka terminal baru:
+
+```bash
+# Masuk ke folder frontend
+cd frontend
+
+# Install dependencies (jika belum)
+npm install
+
+# Jalankan development server
+npm run dev
+```
+
+Frontend akan berjalan di `http://localhost:5173`
+
+### 3. Akses Aplikasi
+
+Buka browser dan kunjungi: `http://localhost:5173`
+
+**PENTING:** Pastikan backend sudah berjalan terlebih dahulu sebelum membuka frontend!
 
 ## API Endpoints
 
@@ -116,9 +184,74 @@ Lihat file `.env.example` untuk konfigurasi yang tersedia:
 - `ENVIRONMENT` - Environment mode (development/production)
 - `DB_*` - Database configuration (untuk future development)
 
-## Development
+## Teknologi Stack
 
-Saat ini aplikasi menggunakan in-memory storage. Untuk production, sebaiknya integrasikan dengan database seperti PostgreSQL, MySQL, atau MongoDB.
+### Backend
+- **Golang 1.21.6** - Bahasa pemrograman
+- **Gin Framework** - Web framework
+- **godotenv** - Environment variable management
+
+### Frontend
+- **React 18** - UI library
+- **Vite** - Build tool & dev server
+- **Axios** - HTTP client
+- **CSS3** - Styling
+
+## Development Notes
+
+- Backend menggunakan **PostgreSQL database** untuk data persistence
+- Data tersimpan **PERMANEN** (tidak hilang saat restart)
+- GORM Auto Migration membuat/update table otomatis
+- CORS sudah dikonfigurasi untuk development
+- Hot reload aktif di frontend dan backend
+
+## Cara Menggunakan Aplikasi
+
+1. **Membuat User Baru**
+   - Isi form "Name" dan "Email" di sebelah kiri
+   - Klik tombol "Create User"
+   - User akan muncul di table
+
+2. **Melihat Daftar User**
+   - Semua user ditampilkan di table sebelah kanan
+   - Klik "Refresh" untuk reload data
+
+3. **Edit User**
+   - Klik tombol "Edit" pada user yang ingin diubah
+   - Form akan terisi otomatis dengan data user
+   - Ubah data, lalu klik "Update User"
+
+4. **Hapus User**
+   - Klik tombol "Delete" pada user
+   - Konfirmasi penghapusan
+   - User akan terhapus dari list
+
+## Troubleshooting
+
+### Backend error saat start
+- Pastikan port 8080 tidak dipakai aplikasi lain
+- Cek `go mod tidy` sudah dijalankan
+
+### Frontend tidak bisa fetch data
+- Pastikan backend berjalan di `http://localhost:8080`
+- Buka browser console (F12) untuk lihat error
+- Cek CORS middleware aktif di backend
+
+### Port conflict
+- Backend default: 8080 (ubah di .env → PORT)
+- Frontend default: 5173 (ubah di vite.config.js)
+
+## Next Steps
+
+Fitur yang bisa ditambahkan:
+- Database integration (PostgreSQL/MySQL)
+- Authentication & Authorization (JWT)
+- Pagination
+- Search & Filter
+- Validation yang lebih kompleks
+- Unit testing
+- Docker containerization
+- CI/CD pipeline
 
 ## License
 

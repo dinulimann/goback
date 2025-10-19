@@ -3,18 +3,23 @@ package routes
 import (
 	"github.com/dinulimann/goback/handlers"
 	"github.com/dinulimann/goback/middleware"
+	"github.com/dinulimann/goback/models"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // SetupRoutes configures all application routes
-func SetupRoutes(router *gin.Engine) {
+func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	// Apply global middleware
 	router.Use(middleware.CORS())
 	router.Use(middleware.Logger())
 
+	// Initialize repositories
+	userRepo := models.NewUserRepository(db)
+
 	// Initialize handlers
 	healthHandler := handlers.NewHealthHandler()
-	userHandler := handlers.NewUserHandler()
+	userHandler := handlers.NewUserHandler(userRepo)
 
 	// Health check endpoint
 	router.GET("/health", healthHandler.Check)
