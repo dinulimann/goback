@@ -1,52 +1,79 @@
-import { useState } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { useAuth } from './context/AuthContext'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import Dashboard from './pages/Dashboard'
 import './App.css'
-import UserForm from './components/UserForm'
-import UserList from './components/UserList'
+
+// Protected Route component
+function ProtectedRoute({ children }) {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh'
+      }}>
+        <div className="spinner"></div>
+      </div>
+    );
+  }
+
+  return isAuthenticated ? children : <Navigate to="/login" />;
+}
+
+// Public Route (redirect if already authenticated)
+function PublicRoute({ children }) {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh'
+      }}>
+        <div className="spinner"></div>
+      </div>
+    );
+  }
+
+  return !isAuthenticated ? children : <Navigate to="/dashboard" />;
+}
 
 function App() {
-  const [editingUser, setEditingUser] = useState(null);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-
-  // Handle saat user berhasil dibuat/diupdate
-  const handleSuccess = () => {
-    setEditingUser(null);
-    setRefreshTrigger(prev => prev + 1); // Trigger refresh list
-  };
-
-  // Handle saat tombol edit diklik
-  const handleEdit = (user) => {
-    setEditingUser(user);
-  };
-
-  // Handle saat tombol cancel diklik
-  const handleCancel = () => {
-    setEditingUser(null);
-  };
-
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1>User Management System</h1>
-        <p>GoBack + React Frontend</p>
-      </header>
-
-      <div className="app-container">
-        <div className="form-section">
-          <UserForm
-            editingUser={editingUser}
-            onSuccess={handleSuccess}
-            onCancel={handleCancel}
-          />
-        </div>
-
-        <div className="list-section">
-          <UserList
-            onEdit={handleEdit}
-            refreshTrigger={refreshTrigger}
-          />
-        </div>
-      </div>
-    </div>
+    <Routes>
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/" element={<Navigate to="/login" />} />
+    </Routes>
   )
 }
 

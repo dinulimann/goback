@@ -19,6 +19,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 
 	// Initialize handlers
 	healthHandler := handlers.NewHealthHandler()
+	authHandler := handlers.NewAuthHandler(userRepo)
 	userHandler := handlers.NewUserHandler(userRepo)
 
 	// Health check endpoint
@@ -27,14 +28,29 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	// API v1 routes
 	v1 := router.Group("/api/v1")
 	{
-		// User routes
-		users := v1.Group("/users")
+		// Public auth routes (no authentication required)
+		auth := v1.Group("/auth")
 		{
-			users.POST("", userHandler.CreateUser)
-			users.GET("", userHandler.GetUsers)
-			users.GET("/:id", userHandler.GetUser)
-			users.PUT("/:id", userHandler.UpdateUser)
-			users.DELETE("/:id", userHandler.DeleteUser)
+			auth.POST("/register", authHandler.Register)
+			auth.POST("/login", authHandler.Login)
+		}
+
+		// Protected routes (require authentication)
+		protected := v1.Group("")
+		protected.Use(middleware.JWTAuth())
+		{
+			// Auth profile
+			protected.GET("/auth/profile", authHandler.GetProfile)
+
+			// User routes (now protected)
+			users := protected.Group("/users")
+			{
+				users.POST("", userHandler.CreateUser)
+				users.GET("", userHandler.GetUsers)
+				users.GET("/:id", userHandler.GetUser)
+				users.PUT("/:id", userHandler.UpdateUser)
+				users.DELETE("/:id", userHandler.DeleteUser)
+			}
 		}
 	}
 }
