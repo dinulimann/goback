@@ -21,6 +21,10 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	healthHandler := handlers.NewHealthHandler()
 	authHandler := handlers.NewAuthHandler(userRepo)
 	userHandler := handlers.NewUserHandler(userRepo)
+	categoryHandler := handlers.NewCategoryHandler(db)
+	productHandler := handlers.NewProductHandler(db)
+	profileHandler := handlers.NewProfileHandler(db)
+	orderHandler := handlers.NewOrderHandler(db)
 
 	// Health check endpoint
 	router.GET("/health", healthHandler.Check)
@@ -33,6 +37,23 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 		{
 			auth.POST("/register", authHandler.Register)
 			auth.POST("/login", authHandler.Login)
+		}
+
+		// Public category routes
+		categories := v1.Group("/categories")
+		{
+			categories.GET("", categoryHandler.GetAllCategories)
+			categories.GET("/:id", categoryHandler.GetCategory)
+			categories.GET("/slug/:slug", categoryHandler.GetCategoryBySlug)
+		}
+
+		// Public product routes
+		products := v1.Group("/products")
+		{
+			products.GET("", productHandler.GetAllProducts)
+			products.GET("/:id", productHandler.GetProduct)
+			products.GET("/sku/:sku", productHandler.GetProductBySKU)
+			products.GET("/category/:categoryId", productHandler.GetProductsByCategory)
 		}
 
 		// Protected routes (require authentication)
@@ -50,6 +71,43 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 				users.GET("/:id", userHandler.GetUser)
 				users.PUT("/:id", userHandler.UpdateUser)
 				users.DELETE("/:id", userHandler.DeleteUser)
+			}
+
+			// Category management routes (protected)
+			categoryManagement := protected.Group("/categories")
+			{
+				categoryManagement.POST("", categoryHandler.CreateCategory)
+				categoryManagement.PUT("/:id", categoryHandler.UpdateCategory)
+				categoryManagement.DELETE("/:id", categoryHandler.DeleteCategory)
+			}
+
+			// Product management routes (protected)
+			productManagement := protected.Group("/products")
+			{
+				productManagement.POST("", productHandler.CreateProduct)
+				productManagement.PUT("/:id", productHandler.UpdateProduct)
+				productManagement.DELETE("/:id", productHandler.DeleteProduct)
+			}
+
+			// Profile routes (protected)
+			profile := protected.Group("/profile")
+			{
+				profile.GET("", profileHandler.GetMyProfile)
+				profile.POST("", profileHandler.CreateOrUpdateMyProfile)
+				profile.PUT("", profileHandler.CreateOrUpdateMyProfile)
+				profile.GET("/user/:userId", profileHandler.GetProfile) // Admin only
+				profile.DELETE("/:id", profileHandler.DeleteProfile)    // Admin only
+			}
+
+			// Order routes (protected)
+			orders := protected.Group("/orders")
+			{
+				orders.POST("", orderHandler.CreateOrder)
+				orders.GET("", orderHandler.GetMyOrders)
+				orders.GET("/all", orderHandler.GetAllOrders) // Admin only
+				orders.GET("/:id", orderHandler.GetOrder)
+				orders.PUT("/:id/status", orderHandler.UpdateOrderStatus) // Admin only
+				orders.POST("/:id/cancel", orderHandler.CancelOrder)
 			}
 		}
 	}

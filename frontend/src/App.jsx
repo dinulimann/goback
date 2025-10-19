@@ -1,8 +1,17 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
+import Navbar from './components/Navbar'
+import Cart from './components/Cart'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
+import Products from './pages/Products'
+import ProductDetail from './pages/ProductDetail'
+import Checkout from './pages/Checkout'
+import Orders from './pages/Orders'
+import Profile from './pages/Profile'
+import AdminProducts from './pages/AdminProducts'
+import AdminCategories from './pages/AdminCategories'
 import './App.css'
 
 // Protected Route component
@@ -46,34 +55,106 @@ function PublicRoute({ children }) {
 }
 
 function App() {
+  const { isAuthenticated } = useAuth();
+
   return (
-    <Routes>
-      <Route
-        path="/login"
-        element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/register"
-        element={
-          <PublicRoute>
-            <Register />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <Dashboard />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/" element={<Navigate to="/login" />} />
-    </Routes>
+    <>
+      {isAuthenticated && <Navbar />}
+      <Cart />
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <>
+              {!isAuthenticated && <Navbar />}
+              <Products />
+            </>
+          }
+        />
+        <Route
+          path="/products/:id"
+          element={
+            <>
+              {!isAuthenticated && <Navbar />}
+              <ProductDetail />
+            </>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders"
+          element={
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/orders/:id"
+          element={
+            <ProtectedRoute>
+              <Orders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/products"
+          element={
+            <ProtectedRoute>
+              <AdminProducts />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/categories"
+          element={
+            <ProtectedRoute>
+              <AdminCategories />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/" element={<Navigate to="/products" />} />
+      </Routes>
+    </>
   )
 }
 

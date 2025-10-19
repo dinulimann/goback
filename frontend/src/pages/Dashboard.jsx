@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import UserForm from '../components/UserForm';
 import UserList from '../components/UserList';
@@ -27,7 +28,7 @@ function Dashboard() {
       <header className="app-header">
         <div className="header-content">
           <div>
-            <h1>User Management System</h1>
+            <h1>Admin Dashboard</h1>
             <p>Welcome back, {user?.name}!</p>
           </div>
           <button onClick={logout} className="btn-logout">
@@ -40,6 +41,68 @@ function Dashboard() {
           </button>
         </div>
       </header>
+
+      {/* Admin Quick Links */}
+      <div style={{ maxWidth: '1200px', margin: '20px auto', padding: '0 20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '30px' }}>
+          <Link to="/admin/categories" style={{
+            padding: '30px',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white',
+            textDecoration: 'none',
+            borderRadius: '12px',
+            textAlign: 'center',
+            fontWeight: '600',
+            fontSize: '1.1rem',
+            transition: 'transform 0.3s',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+          }}>
+            📁 Manage Categories
+          </Link>
+          <Link to="/admin/products" style={{
+            padding: '30px',
+            background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+            color: 'white',
+            textDecoration: 'none',
+            borderRadius: '12px',
+            textAlign: 'center',
+            fontWeight: '600',
+            fontSize: '1.1rem',
+            transition: 'transform 0.3s',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+          }}>
+            📦 Manage Products
+          </Link>
+          <Link to="/orders" style={{
+            padding: '30px',
+            background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+            color: 'white',
+            textDecoration: 'none',
+            borderRadius: '12px',
+            textAlign: 'center',
+            fontWeight: '600',
+            fontSize: '1.1rem',
+            transition: 'transform 0.3s',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+          }}>
+            🛒 View Orders
+          </Link>
+          <Link to="/products" style={{
+            padding: '30px',
+            background: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+            color: 'white',
+            textDecoration: 'none',
+            borderRadius: '12px',
+            textAlign: 'center',
+            fontWeight: '600',
+            fontSize: '1.1rem',
+            transition: 'transform 0.3s',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+          }}>
+            🏪 View Store
+          </Link>
+        </div>
+      </div>
 
       <div className="app-container">
         <div className="form-section">

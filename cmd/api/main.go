@@ -29,7 +29,14 @@ func main() {
 	db := database.GetDB()
 
 	// Auto migrate database schema
-	if err := db.AutoMigrate(&models.User{}); err != nil {
+	if err := db.AutoMigrate(
+		&models.User{},
+		&models.Profile{},
+		&models.Category{},
+		&models.Product{},
+		&models.Order{},
+		&models.OrderItem{},
+	); err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}
 	log.Println("Database migration completed")
