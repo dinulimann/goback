@@ -25,6 +25,8 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	productHandler := handlers.NewProductHandler(db)
 	profileHandler := handlers.NewProfileHandler(db)
 	orderHandler := handlers.NewOrderHandler(db)
+	reviewHandler := handlers.NewReviewHandler(db)
+	wishlistHandler := handlers.NewWishlistHandler(db)
 
 	// Health check endpoint
 	router.GET("/health", healthHandler.Check)
@@ -50,10 +52,16 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 		// Public product routes
 		products := v1.Group("/products")
 		{
-			products.GET("", productHandler.GetAllProducts)
+			products.GET("", productHandler.GetAllProducts) // Now supports search & filters
 			products.GET("/:id", productHandler.GetProduct)
 			products.GET("/sku/:sku", productHandler.GetProductBySKU)
 			products.GET("/category/:categoryId", productHandler.GetProductsByCategory)
+		}
+
+		// Public review routes
+		reviews := v1.Group("/reviews")
+		{
+			reviews.GET("/product/:productId", reviewHandler.GetProductReviews)
 		}
 
 		// Protected routes (require authentication)
@@ -108,6 +116,24 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 				orders.GET("/:id", orderHandler.GetOrder)
 				orders.PUT("/:id/status", orderHandler.UpdateOrderStatus) // Admin only
 				orders.POST("/:id/cancel", orderHandler.CancelOrder)
+			}
+
+			// Review routes (protected)
+			reviewManagement := protected.Group("/reviews")
+			{
+				reviewManagement.POST("", reviewHandler.CreateReview)
+				reviewManagement.GET("/my", reviewHandler.GetUserReviews)
+				reviewManagement.PUT("/:id", reviewHandler.UpdateReview)
+				reviewManagement.DELETE("/:id", reviewHandler.DeleteReview)
+			}
+
+			// Wishlist routes (protected)
+			wishlist := protected.Group("/wishlist")
+			{
+				wishlist.POST("", wishlistHandler.AddToWishlist)
+				wishlist.GET("", wishlistHandler.GetWishlist)
+				wishlist.DELETE("", wishlistHandler.RemoveFromWishlist)
+				wishlist.POST("/check", wishlistHandler.CheckWishlist)
 			}
 		}
 	}

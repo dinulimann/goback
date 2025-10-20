@@ -36,6 +36,8 @@ func main() {
 		&models.Product{},
 		&models.Order{},
 		&models.OrderItem{},
+		&models.Review{},
+		&models.Wishlist{},
 	); err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}

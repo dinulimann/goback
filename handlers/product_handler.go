@@ -19,9 +19,58 @@ func NewProductHandler(db *gorm.DB) *ProductHandler {
 	}
 }
 
-// GetAllProducts retrieves all products
+// GetAllProducts retrieves all products with optional filters
 func (h *ProductHandler) GetAllProducts(c *gin.Context) {
-	products, err := h.repo.GetAll()
+	// Check for query parameters
+	search := c.Query("search")
+	categoryIDStr := c.Query("category_id")
+	minPriceStr := c.Query("min_price")
+	maxPriceStr := c.Query("max_price")
+
+	// If no filters, return all products
+	if search == "" && categoryIDStr == "" && minPriceStr == "" && maxPriceStr == "" {
+		products, err := h.repo.GetAll()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Failed to retrieve products",
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"data": products,
+		})
+		return
+	}
+
+	// Parse optional parameters
+	var categoryID *uint
+	if categoryIDStr != "" {
+		id, err := strconv.ParseUint(categoryIDStr, 10, 32)
+		if err == nil {
+			catID := uint(id)
+			categoryID = &catID
+		}
+	}
+
+	var minPrice *float64
+	if minPriceStr != "" {
+		price, err := strconv.ParseFloat(minPriceStr, 64)
+		if err == nil {
+			minPrice = &price
+		}
+	}
+
+	var maxPrice *float64
+	if maxPriceStr != "" {
+		price, err := strconv.ParseFloat(maxPriceStr, 64)
+		if err == nil {
+			maxPrice = &price
+		}
+	}
+
+	// Get filtered products
+	products, err := h.repo.GetWithFilters(search, categoryID, minPrice, maxPrice)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Failed to retrieve products",
@@ -31,6 +80,12 @@ func (h *ProductHandler) GetAllProducts(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": products,
+		"filters": gin.H{
+			"search":      search,
+			"category_id": categoryID,
+			"min_price":   minPrice,
+			"max_price":   maxPrice,
+		},
 	})
 }
 

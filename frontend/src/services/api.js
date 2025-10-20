@@ -167,10 +167,18 @@ export const categoryService = {
 
 // Product API Services
 export const productService = {
-  // Get all products
-  getAllProducts: async () => {
+  // Get all products with optional filters
+  getAllProducts: async (filters = {}) => {
     try {
-      const response = await apiClient.get('/products');
+      const params = new URLSearchParams();
+      if (filters.search) params.append('search', filters.search);
+      if (filters.category_id) params.append('category_id', filters.category_id);
+      if (filters.min_price) params.append('min_price', filters.min_price);
+      if (filters.max_price) params.append('max_price', filters.max_price);
+
+      const queryString = params.toString();
+      const url = queryString ? `/products?${queryString}` : '/products';
+      const response = await apiClient.get(url);
       return response.data;
     } catch (error) {
       console.error('Error fetching products:', error);
@@ -345,6 +353,111 @@ export const orderService = {
       return response.data;
     } catch (error) {
       console.error(`Error cancelling order ${id}:`, error);
+      throw error;
+    }
+  },
+};
+
+// Review API Services
+export const reviewService = {
+  // Get reviews for a product
+  getProductReviews: async (productId) => {
+    try {
+      const response = await apiClient.get(`/reviews/product/${productId}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error fetching reviews for product ${productId}:`, error);
+      throw error;
+    }
+  },
+
+  // Get my reviews
+  getMyReviews: async () => {
+    try {
+      const response = await apiClient.get('/reviews/my');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching my reviews:', error);
+      throw error;
+    }
+  },
+
+  // Create review
+  createReview: async (reviewData) => {
+    try {
+      const response = await apiClient.post('/reviews', reviewData);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating review:', error);
+      throw error;
+    }
+  },
+
+  // Update review
+  updateReview: async (id, reviewData) => {
+    try {
+      const response = await apiClient.put(`/reviews/${id}`, reviewData);
+      return response.data;
+    } catch (error) {
+      console.error(`Error updating review ${id}:`, error);
+      throw error;
+    }
+  },
+
+  // Delete review
+  deleteReview: async (id) => {
+    try {
+      const response = await apiClient.delete(`/reviews/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error(`Error deleting review ${id}:`, error);
+      throw error;
+    }
+  },
+};
+
+// Wishlist API Services
+export const wishlistService = {
+  // Get my wishlist
+  getWishlist: async () => {
+    try {
+      const response = await apiClient.get('/wishlist');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching wishlist:', error);
+      throw error;
+    }
+  },
+
+  // Add to wishlist
+  addToWishlist: async (productId) => {
+    try {
+      const response = await apiClient.post('/wishlist', { product_id: productId });
+      return response.data;
+    } catch (error) {
+      console.error('Error adding to wishlist:', error);
+      throw error;
+    }
+  },
+
+  // Remove from wishlist
+  removeFromWishlist: async (productId) => {
+    try {
+      const response = await apiClient.delete('/wishlist', { data: { product_id: productId } });
+      return response.data;
+    } catch (error) {
+      console.error('Error removing from wishlist:', error);
+      throw error;
+    }
+  },
+
+  // Check if product is in wishlist
+  checkWishlist: async (productId) => {
+    try {
+      const response = await apiClient.post('/wishlist/check', { product_id: productId });
+      return response.data;
+    } catch (error) {
+      console.error('Error checking wishlist:', error);
       throw error;
     }
   },

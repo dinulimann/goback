@@ -107,3 +107,50 @@ func (r *ProductRepository) Delete(id uint) error {
 func (r *ProductRepository) UpdateStock(id uint, quantity int) error {
 	return r.db.Model(&Product{}).Where("id = ?", id).Update("stock", gorm.Expr("stock + ?", quantity)).Error
 }
+
+// Search searches products by name or description
+func (r *ProductRepository) Search(query string) ([]Product, error) {
+	var products []Product
+	searchQuery := "%" + query + "%"
+	err := r.db.Preload("Category").
+		Where("name LIKE ? OR description LIKE ?", searchQuery, searchQuery).
+		Order("id desc").
+		Find(&products).Error
+	return products, err
+}
+
+// GetByPriceRange returns products within price range
+func (r *ProductRepository) GetByPriceRange(minPrice, maxPrice float64) ([]Product, error) {
+	var products []Product
+	err := r.db.Preload("Category").
+		Where("price >= ? AND price <= ?", minPrice, maxPrice).
+		Order("price asc").
+		Find(&products).Error
+	return products, err
+}
+
+// GetWithFilters returns products with filters (search, category, price range)
+func (r *ProductRepository) GetWithFilters(search string, categoryID *uint, minPrice, maxPrice *float64) ([]Product, error) {
+	var products []Product
+	query := r.db.Preload("Category")
+
+	if search != "" {
+		searchQuery := "%" + search + "%"
+		query = query.Where("name LIKE ? OR description LIKE ?", searchQuery, searchQuery)
+	}
+
+	if categoryID != nil && *categoryID > 0 {
+		query = query.Where("category_id = ?", *categoryID)
+	}
+
+	if minPrice != nil {
+		query = query.Where("price >= ?", *minPrice)
+	}
+
+	if maxPrice != nil {
+		query = query.Where("price <= ?", *maxPrice)
+	}
+
+	err := query.Order("id desc").Find(&products).Error
+	return products, err
+}
