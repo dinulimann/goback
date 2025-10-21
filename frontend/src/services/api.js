@@ -473,3 +473,6 @@ export const healthCheck = async () => {
     throw error;
   }
 };
+
+// Export apiClient as default for direct axios usage
+export default apiClient;

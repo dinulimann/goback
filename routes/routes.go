@@ -27,6 +27,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	orderHandler := handlers.NewOrderHandler(db)
 	reviewHandler := handlers.NewReviewHandler(db)
 	wishlistHandler := handlers.NewWishlistHandler(db)
+	dashboardHandler := handlers.NewDashboardHandler(db)
 
 	// Health check endpoint
 	router.GET("/health", healthHandler.Check)
@@ -134,6 +135,13 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 				wishlist.GET("", wishlistHandler.GetWishlist)
 				wishlist.DELETE("", wishlistHandler.RemoveFromWishlist)
 				wishlist.POST("/check", wishlistHandler.CheckWishlist)
+			}
+
+			// Dashboard routes (protected - admin only)
+			dashboard := protected.Group("/dashboard")
+			{
+				dashboard.GET("/stats", dashboardHandler.GetDashboardStats)
+				dashboard.GET("/revenue", dashboardHandler.GetRevenueStats)
 			}
 		}
 	}

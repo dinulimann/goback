@@ -36,6 +36,16 @@ function Navbar() {
               <Link to="/dashboard" className="nav-link">
                 Dashboard
               </Link>
+              <div className="dropdown">
+                <button className="dropdown-btn">
+                  Admin
+                </button>
+                <div className="dropdown-content">
+                  <Link to="/admin/dashboard">Admin Dashboard</Link>
+                  <Link to="/admin/products">Manage Products</Link>
+                  <Link to="/admin/categories">Manage Categories</Link>
+                </div>
+              </div>
               <button onClick={toggleCart} className="cart-btn">
                 🛒 Cart
                 {getCartItemCount() > 0 && (
