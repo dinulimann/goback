@@ -1,110 +1,178 @@
-# GoBack - User Management System
+# 🛒 GoBack - E-Commerce Platform
 
-Fullstack aplikasi User Management dengan Golang Backend dan React Frontend.
+Fullstack E-Commerce aplikasi dengan Golang Backend dan React Frontend yang modern dan responsive.
 
-## Fitur
+## ✨ Fitur Utama
 
-### Backend (Golang + Gin)
-- RESTful API untuk manajemen User (CRUD)
-- Middleware untuk CORS dan Logging
-- Configuration management dengan environment variables
-- Struktur project yang terorganisir
-- Health check endpoint
+### 🔐 Authentication & Authorization
+- **JWT (JSON Web Token)** untuk autentikasi yang aman
+- Register dan Login dengan password hashing (bcrypt)
+- Protected routes dengan JWT middleware
+- Token expiration (7 hari)
+- Profile management
 
-### Frontend (React + Vite)
-- User interface untuk manajemen user
-- Create, Read, Update, Delete users
-- Responsive design
-- Real-time form validation
-- Integration dengan backend API
+### 🛍️ E-Commerce Features
+- **Product Management**
+  - Browse products dengan category filtering
+  - Product detail page
+  - Stock management
+  - Image upload support
+- **Shopping Cart**
+  - Add/remove items
+  - Update quantities
+  - Real-time cart count
+  - Glassmorphism cart drawer
+- **Order Management**
+  - Checkout process
+  - Order history
+  - Order status tracking
+  - Order details view
 
-## Struktur Project
+### 👨‍💼 Admin Dashboard
+- Product CRUD operations
+- Category management
+- Order management
+- Sales analytics
+- User management
+
+### 🎨 Modern UI/UX
+- **Glassmorphism design** dengan backdrop blur
+- **Animated gradients** dan smooth transitions
+- **Floating particles** background effects
+- **Micro-interactions** untuk better UX
+- **Responsive design** untuk semua device
+- **Dark mode ready** color palette
+
+## 🏗️ Struktur Project
 
 ```
 goback/
-├── cmd/api/           # Backend entry point
+├── cmd/api/              # Backend entry point
 │   └── main.go
-├── config/            # Configuration management
+├── config/               # Configuration management
 │   └── config.go
-├── handlers/          # HTTP request handlers
-│   ├── health_handler.go
+├── handlers/             # HTTP request handlers
+│   ├── auth_handler.go   # Authentication
+│   ├── product_handler.go
+│   ├── category_handler.go
+│   ├── order_handler.go
 │   └── user_handler.go
-├── middleware/        # HTTP middlewares
+├── middleware/           # HTTP middlewares
+│   ├── auth.go          # JWT middleware
 │   ├── cors.go
 │   └── logger.go
-├── models/            # Data models
-│   └── user.go
-├── routes/            # Route definitions
+├── models/               # Data models & repositories
+│   ├── user.go
+│   ├── product.go
+│   ├── category.go
+│   └── order.go
+├── routes/               # Route definitions
 │   └── routes.go
-├── frontend/          # React Frontend
+├── frontend/             # React Frontend
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── UserForm.jsx
-│   │   │   └── UserList.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── Cart.jsx
+│   │   │   └── ...
+│   │   ├── pages/
+│   │   │   ├── Login.jsx
+│   │   │   ├── Register.jsx
+│   │   │   ├── Products.jsx
+│   │   │   ├── ProductDetail.jsx
+│   │   │   ├── Checkout.jsx
+│   │   │   ├── Orders.jsx
+│   │   │   ├── Profile.jsx
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── AdminDashboard.jsx
+│   │   │   ├── AdminProducts.jsx
+│   │   │   └── AdminCategories.jsx
+│   │   ├── context/
+│   │   │   ├── AuthContext.jsx
+│   │   │   └── CartContext.jsx
 │   │   ├── services/
 │   │   │   └── api.js
+│   │   ├── styles/
 │   │   ├── App.jsx
 │   │   └── main.jsx
-│   ├── package.json
-│   └── README.md
-├── .env.example       # Environment variables example
-├── go.mod             # Go module file
+│   └── package.json
+├── .env.example
+├── go.mod
 └── README.md
 ```
 
-## Prerequisites
+## 📋 Prerequisites
 
-- Go 1.21.6 atau lebih baru
-- Node.js 18+ dan npm
-- PostgreSQL 14+
+- **Go 1.21+** atau lebih baru
+- **Node.js 18+** dan npm
+- **PostgreSQL 14+**
 - Git
 
-## Instalasi & Menjalankan Aplikasi
+## 🚀 Instalasi & Setup
 
-### 0. Setup PostgreSQL (WAJIB)
+### 1. Clone Repository
 
-Aplikasi sekarang menggunakan PostgreSQL untuk data persistence.
-
-**Lihat panduan lengkap:** [POSTGRESQL_SETUP.md](POSTGRESQL_SETUP.md)
-
-**Quick Setup:**
 ```bash
-# 1. Install PostgreSQL (sesuai OS Anda)
-
-# 2. Buat database
-psql postgres
-CREATE DATABASE goback_db;
-\q
-
-# 3. Copy dan edit .env
-cp .env.example .env
-# Edit .env dengan password postgres Anda
+git clone https://github.com/dinulimann/goback.git
+cd goback
 ```
 
-### 1. Backend (Golang)
+### 2. Setup PostgreSQL Database
+
+```bash
+# Login ke PostgreSQL
+psql postgres
+
+# Buat database baru
+CREATE DATABASE goback_db;
+
+# Keluar
+\q
+```
+
+### 3. Setup Backend (Golang)
 
 ```bash
 # Install dependencies
 go mod tidy
 
-# Setup environment variables
+# Copy environment file
 cp .env.example .env
-# Edit .env dengan konfigurasi PostgreSQL Anda
 
-# Jalankan backend server
-go run cmd/api/main.go
+# Edit .env dengan konfigurasi Anda
+nano .env
+```
+
+**Konfigurasi .env:**
+```env
+# Server
+PORT=8080
+ENVIRONMENT=development
+
+# Database
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=your_password
+DB_NAME=goback_db
+DB_SSLMODE=disable
+
+# JWT Secret (WAJIB GANTI DI PRODUCTION!)
+JWT_SECRET=your-super-secret-jwt-key-change-this
+```
+
+```bash
+# Jalankan backend
+go run main.go
 ```
 
 Output yang diharapkan:
 ```
-Database connection established successfully
-Database migration completed
-Server starting on port 8080
+✓ Database connection established successfully
+✓ Database migration completed
+✓ Server starting on port 8080
 ```
 
-Backend akan berjalan di `http://localhost:8080`
-
-### 2. Frontend (React)
+### 4. Setup Frontend (React)
 
 Buka terminal baru:
 
@@ -112,7 +180,7 @@ Buka terminal baru:
 # Masuk ke folder frontend
 cd frontend
 
-# Install dependencies (jika belum)
+# Install dependencies
 npm install
 
 # Jalankan development server
@@ -121,138 +189,287 @@ npm run dev
 
 Frontend akan berjalan di `http://localhost:5173`
 
-### 3. Akses Aplikasi
+### 5. Akses Aplikasi
 
-Buka browser dan kunjungi: `http://localhost:5173`
+Buka browser: **http://localhost:5173**
 
-**PENTING:** Pastikan backend sudah berjalan terlebih dahulu sebelum membuka frontend!
+**Default Admin Account** (jika belum ada, buat manual):
+- Email: `admin@example.com`
+- Password: `admin123`
 
-## API Endpoints
+## 📡 API Endpoints
 
-### Health Check
-- **GET** `/health` - Mengecek status server
+### Authentication
+```
+POST   /api/auth/register       - Register user baru
+POST   /api/auth/login          - Login user
+GET    /api/auth/profile        - Get user profile (Protected)
+```
+
+### Products
+```
+GET    /api/products            - Get all products
+GET    /api/products/:id        - Get product by ID
+GET    /api/products/category/:id - Get products by category
+POST   /api/products            - Create product (Protected)
+PUT    /api/products/:id        - Update product (Protected)
+DELETE /api/products/:id        - Delete product (Protected)
+```
+
+### Categories
+```
+GET    /api/categories          - Get all categories
+GET    /api/categories/:id      - Get category by ID
+POST   /api/categories          - Create category (Protected)
+PUT    /api/categories/:id      - Update category (Protected)
+DELETE /api/categories/:id      - Delete category (Protected)
+```
+
+### Orders
+```
+GET    /api/orders              - Get user orders (Protected)
+GET    /api/orders/:id          - Get order by ID (Protected)
+POST   /api/orders              - Create order (Protected)
+PUT    /api/orders/:id/status   - Update order status (Protected)
+```
 
 ### Users
-- **POST** `/api/v1/users` - Membuat user baru
-- **GET** `/api/v1/users` - Mendapatkan semua users
-- **GET** `/api/v1/users/:id` - Mendapatkan user berdasarkan ID
-- **PUT** `/api/v1/users/:id` - Update user
-- **DELETE** `/api/v1/users/:id` - Hapus user
+```
+GET    /api/users               - Get all users (Protected)
+GET    /api/users/:id           - Get user by ID (Protected)
+PUT    /api/users/:id           - Update user (Protected)
+DELETE /api/users/:id           - Delete user (Protected)
+```
 
-## Contoh Request
+## 🔒 Authentication Flow
 
-### Membuat User Baru
+### Register/Login
 ```bash
-curl -X POST http://localhost:8080/api/v1/users \
+# Register
+curl -X POST http://localhost:8080/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "name": "John Doe",
+    "email": "john@example.com",
+    "password": "password123"
+  }'
+
+# Response
+{
+  "message": "Registration successful",
+  "token": "eyJhbGciOiJIUzI1NiIs...",
+  "user": {
+    "id": 1,
+    "name": "John Doe",
     "email": "john@example.com"
-  }'
+  }
+}
 ```
 
-### Mendapatkan Semua Users
+### Protected Request
 ```bash
-curl http://localhost:8080/api/v1/users
+# Gunakan token di header Authorization
+curl -X GET http://localhost:8080/api/auth/profile \
+  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIs..."
 ```
 
-### Mendapatkan User by ID
-```bash
-curl http://localhost:8080/api/v1/users/1
-```
-
-### Update User
-```bash
-curl -X PUT http://localhost:8080/api/v1/users/1 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Jane Doe",
-    "email": "jane@example.com"
-  }'
-```
-
-### Hapus User
-```bash
-curl -X DELETE http://localhost:8080/api/v1/users/1
-```
-
-## Environment Variables
-
-Lihat file `.env.example` untuk konfigurasi yang tersedia:
-
-- `PORT` - Port server (default: 8080)
-- `ENVIRONMENT` - Environment mode (development/production)
-- `DB_*` - Database configuration (untuk future development)
-
-## Teknologi Stack
+## 🛠️ Technology Stack
 
 ### Backend
-- **Golang 1.21.6** - Bahasa pemrograman
-- **Gin Framework** - Web framework
-- **godotenv** - Environment variable management
+- **Go 1.24** - Programming language
+- **Gin** - Web framework
+- **GORM** - ORM untuk database
+- **PostgreSQL** - Database
+- **JWT** - Authentication (golang-jwt/jwt/v5)
+- **bcrypt** - Password hashing
+- **godotenv** - Environment variables
 
 ### Frontend
-- **React 18** - UI library
+- **React 19** - UI library
+- **React Router DOM** - Routing
 - **Vite** - Build tool & dev server
 - **Axios** - HTTP client
-- **CSS3** - Styling
+- **Context API** - State management
+- **CSS3** - Modern styling dengan glassmorphism
 
-## Development Notes
+## 🎨 UI Features
 
-- Backend menggunakan **PostgreSQL database** untuk data persistence
-- Data tersimpan **PERMANEN** (tidak hilang saat restart)
-- GORM Auto Migration membuat/update table otomatis
-- CORS sudah dikonfigurasi untuk development
-- Hot reload aktif di frontend dan backend
+### Design System
+- **Glassmorphism** dengan backdrop-filter blur
+- **Animated gradients** yang smooth
+- **Floating particles** untuk background depth
+- **Smooth transitions** dengan cubic-bezier
+- **Micro-interactions** pada hover states
+- **Color palette** yang modern dan consistent
 
-## Cara Menggunakan Aplikasi
+### Animations
+- Card hover effects dengan scale & translate
+- Gradient text animations
+- Loading spinners dengan multi-color
+- Button ripple effects
+- Floating icon animations
+- Border glow animations
+- Slide-in/fade-in transitions
 
-1. **Membuat User Baru**
-   - Isi form "Name" dan "Email" di sebelah kiri
-   - Klik tombol "Create User"
-   - User akan muncul di table
+## 📱 Features Walkthrough
 
-2. **Melihat Daftar User**
-   - Semua user ditampilkan di table sebelah kanan
-   - Klik "Refresh" untuk reload data
+### 1. Register & Login
+- Buat akun baru atau login dengan akun existing
+- JWT token disimpan di localStorage
+- Auto redirect ke dashboard setelah login
 
-3. **Edit User**
-   - Klik tombol "Edit" pada user yang ingin diubah
-   - Form akan terisi otomatis dengan data user
-   - Ubah data, lalu klik "Update User"
+### 2. Browse Products
+- Lihat semua products di halaman Products
+- Filter by category menggunakan sidebar
+- View product details dengan klik product card
+- Stock indicator (In Stock / Out of Stock)
 
-4. **Hapus User**
-   - Klik tombol "Delete" pada user
-   - Konfirmasi penghapusan
-   - User akan terhapus dari list
+### 3. Shopping Cart
+- Add products ke cart dari product page
+- View cart dengan klik cart button di navbar
+- Update quantities atau remove items
+- Real-time cart count badge
 
-## Troubleshooting
+### 4. Checkout
+- Review cart items
+- Input shipping information
+- Place order
+- Redirect ke order confirmation
 
-### Backend error saat start
-- Pastikan port 8080 tidak dipakai aplikasi lain
-- Cek `go mod tidy` sudah dijalankan
+### 5. Order History
+- View semua orders di halaman Orders
+- See order status (Pending, Processing, Shipped, Delivered)
+- View order details dengan item list
 
-### Frontend tidak bisa fetch data
-- Pastikan backend berjalan di `http://localhost:8080`
-- Buka browser console (F12) untuk lihat error
-- Cek CORS middleware aktif di backend
+### 6. Admin Dashboard
+- Analytics dashboard dengan sales metrics
+- Manage products (CRUD operations)
+- Manage categories
+- View and update order status
+- User management
 
-### Port conflict
-- Backend default: 8080 (ubah di .env → PORT)
-- Frontend default: 5173 (ubah di vite.config.js)
+## 🔧 Development Tips
 
-## Next Steps
+### Hot Reload
+- Backend: Gunakan `air` untuk hot reload
+  ```bash
+  go install github.com/cosmtrek/air@latest
+  air
+  ```
+- Frontend: Vite sudah include hot reload otomatis
 
-Fitur yang bisa ditambahkan:
-- Database integration (PostgreSQL/MySQL)
-- Authentication & Authorization (JWT)
-- Pagination
-- Search & Filter
-- Validation yang lebih kompleks
-- Unit testing
-- Docker containerization
-- CI/CD pipeline
+### Database Migrations
+GORM auto migration akan membuat/update tables otomatis saat aplikasi start.
 
-## License
+Manual migration jika diperlukan:
+```bash
+# Masuk ke psql
+psql goback_db
 
-MIT
+# Lihat tables
+\dt
+
+# Lihat struktur table
+\d users
+\d products
+\d categories
+\d orders
+```
+
+### CORS Configuration
+CORS sudah dikonfigurasi untuk development. Untuk production, update di `middleware/cors.go`
+
+## 🐛 Troubleshooting
+
+### Backend tidak start
+- ✅ Pastikan PostgreSQL running
+- ✅ Check credentials di .env benar
+- ✅ Port 8080 tidak digunakan aplikasi lain
+- ✅ Run `go mod tidy`
+
+### Frontend tidak bisa connect ke backend
+- ✅ Backend harus running di port 8080
+- ✅ Check browser console (F12) untuk error
+- ✅ Verify API base URL di `frontend/src/services/api.js`
+
+### JWT Token expired
+- Token valid 7 hari
+- Logout dan login ulang untuk refresh token
+
+### Database migration error
+- Drop database dan recreate:
+  ```sql
+  DROP DATABASE goback_db;
+  CREATE DATABASE goback_db;
+  ```
+
+## 🚀 Production Deployment
+
+### Backend
+1. Build binary:
+   ```bash
+   go build -o goback-server main.go
+   ```
+
+2. Set environment variables:
+   ```bash
+   export ENVIRONMENT=production
+   export JWT_SECRET=your-production-secret
+   export DB_HOST=production-db-host
+   ```
+
+3. Run:
+   ```bash
+   ./goback-server
+   ```
+
+### Frontend
+1. Build untuk production:
+   ```bash
+   cd frontend
+   npm run build
+   ```
+
+2. Serve static files dengan nginx/apache atau deploy ke:
+   - Vercel
+   - Netlify
+   - AWS S3 + CloudFront
+   - Firebase Hosting
+
+### Docker (Coming Soon)
+```bash
+docker-compose up -d
+```
+
+## 🔜 Roadmap
+
+- [ ] Payment gateway integration (Midtrans/Stripe)
+- [ ] Product reviews & ratings
+- [ ] Wishlist functionality
+- [ ] Advanced search & filters
+- [ ] Email notifications
+- [ ] Product recommendations
+- [ ] Admin analytics dashboard
+- [ ] Multi-image upload for products
+- [ ] Social login (Google, Facebook)
+- [ ] Forgot password functionality
+- [ ] Unit & integration testing
+- [ ] Docker containerization
+- [ ] CI/CD pipeline
+- [ ] API documentation (Swagger)
+
+## 📝 License
+
+MIT License - feel free to use this project for learning or commercial purposes.
+
+## 👨‍💻 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📧 Contact
+
+For questions or suggestions, please open an issue or contact via email.
+
+---
+
+**Made with ❤️ using Go & React**
