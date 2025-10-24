@@ -19,23 +19,28 @@ const (
 
 // Order represents an order in the system
 type Order struct {
-	ID              uint        `json:"id" gorm:"primaryKey"`
-	UserID          uint        `json:"user_id" gorm:"not null"`
-	OrderNumber     string      `json:"order_number" gorm:"type:varchar(50);uniqueIndex;not null"`
-	Status          OrderStatus `json:"status" gorm:"type:varchar(20);default:'pending'"`
-	TotalAmount     float64     `json:"total_amount" gorm:"type:decimal(12,2);not null"`
-	ShippingAddress string      `json:"shipping_address" gorm:"type:text"`
-	ShippingCity    string      `json:"shipping_city" gorm:"type:varchar(100)"`
-	ShippingProvince string     `json:"shipping_province" gorm:"type:varchar(100)"`
-	ShippingPostalCode string   `json:"shipping_postal_code" gorm:"type:varchar(10)"`
-	PaymentMethod   string      `json:"payment_method" gorm:"type:varchar(50)"`
-	PaymentStatus   string      `json:"payment_status" gorm:"type:varchar(20);default:'unpaid'"`
-	Notes           string      `json:"notes" gorm:"type:text"`
-	CreatedAt       time.Time   `json:"created_at"`
-	UpdatedAt       time.Time   `json:"updated_at"`
+	ID                 uint        `json:"id" gorm:"primaryKey"`
+	UserID             uint        `json:"user_id" gorm:"not null"`
+	OrderNumber        string      `json:"order_number" gorm:"type:varchar(50);uniqueIndex;not null"`
+	Status             OrderStatus `json:"status" gorm:"type:varchar(20);default:'pending'"`
+	TotalAmount        float64     `json:"total_amount" gorm:"type:decimal(12,2);not null"`
+	CouponID           *uint       `json:"coupon_id" gorm:"default:null"`
+	CouponCode         string      `json:"coupon_code" gorm:"type:varchar(50)"`
+	DiscountAmount     float64     `json:"discount_amount" gorm:"type:decimal(12,2);default:0"`
+	FinalAmount        float64     `json:"final_amount" gorm:"type:decimal(12,2);not null"`
+	ShippingAddress    string      `json:"shipping_address" gorm:"type:text"`
+	ShippingCity       string      `json:"shipping_city" gorm:"type:varchar(100)"`
+	ShippingProvince   string      `json:"shipping_province" gorm:"type:varchar(100)"`
+	ShippingPostalCode string      `json:"shipping_postal_code" gorm:"type:varchar(10)"`
+	PaymentMethod      string      `json:"payment_method" gorm:"type:varchar(50)"`
+	PaymentStatus      string      `json:"payment_status" gorm:"type:varchar(20);default:'unpaid'"`
+	Notes              string      `json:"notes" gorm:"type:text"`
+	CreatedAt          time.Time   `json:"created_at"`
+	UpdatedAt          time.Time   `json:"updated_at"`
 
 	// Relations
 	User       User        `json:"user,omitempty" gorm:"foreignKey:UserID"`
+	Coupon     *Coupon     `json:"coupon,omitempty" gorm:"foreignKey:CouponID"`
 	OrderItems []OrderItem `json:"order_items,omitempty" gorm:"foreignKey:OrderID"`
 }
 
@@ -47,6 +52,7 @@ type OrderInput struct {
 	ShippingPostalCode string           `json:"shipping_postal_code" binding:"required"`
 	PaymentMethod      string           `json:"payment_method" binding:"required"`
 	Notes              string           `json:"notes"`
+	CouponCode         string           `json:"coupon_code"`
 	Items              []OrderItemInput `json:"items" binding:"required,min=1,dive"`
 }
 

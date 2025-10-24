@@ -15,6 +15,7 @@ type OrderHandler struct {
 	orderRepo     *models.OrderRepository
 	orderItemRepo *models.OrderItemRepository
 	productRepo   *models.ProductRepository
+	couponRepo    *models.CouponRepository
 	db            *gorm.DB
 }
 
@@ -23,6 +24,7 @@ func NewOrderHandler(db *gorm.DB) *OrderHandler {
 		orderRepo:     models.NewOrderRepository(db),
 		orderItemRepo: models.NewOrderItemRepository(db),
 		productRepo:   models.NewProductRepository(db),
+		couponRepo:    models.NewCouponRepository(db),
 		db:            db,
 	}
 }
@@ -171,12 +173,46 @@ func (h *OrderHandler) CreateOrder(c *gin.Context) {
 		})
 	}
 
+	// Apply coupon if provided
+	var discountAmount float64
+	var coupon *models.Coupon
+	var couponID *uint
+
+	if input.CouponCode != "" {
+		validatedCoupon, err := h.couponRepo.ValidateCoupon(input.CouponCode, totalAmount)
+		if err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": fmt.Sprintf("Coupon validation failed: %s", err.Error()),
+			})
+			return
+		}
+		coupon = validatedCoupon
+		discountAmount = coupon.CalculateDiscount(totalAmount)
+		couponID = &coupon.ID
+
+		// Increment coupon usage
+		if err := h.couponRepo.IncrementUsage(coupon.ID); err != nil {
+			tx.Rollback()
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "Failed to update coupon usage",
+			})
+			return
+		}
+	}
+
+	finalAmount := totalAmount - discountAmount
+
 	// Create order
 	order := &models.Order{
 		UserID:             userID.(uint),
 		OrderNumber:        generateOrderNumber(),
 		Status:             models.OrderStatusPending,
 		TotalAmount:        totalAmount,
+		CouponID:           couponID,
+		CouponCode:         input.CouponCode,
+		DiscountAmount:     discountAmount,
+		FinalAmount:        finalAmount,
 		ShippingAddress:    input.ShippingAddress,
 		ShippingCity:       input.ShippingCity,
 		ShippingProvince:   input.ShippingProvince,

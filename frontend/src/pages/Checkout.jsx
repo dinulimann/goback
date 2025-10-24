@@ -2,13 +2,16 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { orderService, profileService } from '../services/api';
+import api from '../services/api';
 import './Checkout.css';
 
 function Checkout() {
   const navigate = useNavigate();
   const { cartItems, getCartTotal, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
-  const [profile, setProfile] = useState(null);
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponLoading, setCouponLoading] = useState(false);
   const [formData, setFormData] = useState({
     shipping_address: '',
     shipping_city: '',
@@ -29,7 +32,6 @@ function Checkout() {
     try {
       const response = await profileService.getMyProfile();
       const profileData = response.data;
-      setProfile(profileData);
 
       // Pre-fill form with profile data
       if (profileData) {
@@ -53,6 +55,43 @@ function Checkout() {
     });
   };
 
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) {
+      alert('Please enter a coupon code');
+      return;
+    }
+
+    setCouponLoading(true);
+    try {
+      const response = await api.post('/coupons/validate', {
+        code: couponCode.toUpperCase(),
+        order_amount: getCartTotal(),
+      });
+
+      setAppliedCoupon(response.data);
+      alert('Coupon applied successfully!');
+    } catch (err) {
+      console.error('Coupon validation error:', err);
+      alert(err.response?.data?.error || 'Invalid or expired coupon');
+      setAppliedCoupon(null);
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setCouponCode('');
+    setAppliedCoupon(null);
+  };
+
+  const getFinalTotal = () => {
+    const total = getCartTotal();
+    if (appliedCoupon) {
+      return appliedCoupon.final_amount;
+    }
+    return total;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -66,6 +105,7 @@ function Checkout() {
     try {
       const orderData = {
         ...formData,
+        coupon_code: appliedCoupon ? appliedCoupon.coupon.code : '',
         items: cartItems.map((item) => ({
           product_id: item.id,
           quantity: item.quantity,
@@ -245,9 +285,67 @@ function Checkout() {
 
             <div className="summary-divider" />
 
+            <div className="coupon-section">
+              <h3>Have a Coupon?</h3>
+              {!appliedCoupon ? (
+                <div className="coupon-input-group">
+                  <input
+                    type="text"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    placeholder="Enter coupon code"
+                    className="coupon-input"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleApplyCoupon}
+                    className="apply-coupon-btn"
+                    disabled={couponLoading}
+                  >
+                    {couponLoading ? 'Checking...' : 'Apply'}
+                  </button>
+                </div>
+              ) : (
+                <div className="applied-coupon">
+                  <div className="coupon-info">
+                    <span className="coupon-code-tag">{appliedCoupon.coupon.code}</span>
+                    <span className="coupon-discount">
+                      -{formatPrice(appliedCoupon.discount)}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveCoupon}
+                    className="remove-coupon-btn"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="summary-divider" />
+
+            <div className="summary-breakdown">
+              <div className="summary-row">
+                <span>Subtotal</span>
+                <span>{formatPrice(getCartTotal())}</span>
+              </div>
+              {appliedCoupon && (
+                <div className="summary-row discount-row">
+                  <span>Discount ({appliedCoupon.coupon.code})</span>
+                  <span className="discount-amount">
+                    -{formatPrice(appliedCoupon.discount)}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="summary-divider" />
+
             <div className="summary-total">
               <span>Total</span>
-              <span className="total-amount">{formatPrice(getCartTotal())}</span>
+              <span className="total-amount">{formatPrice(getFinalTotal())}</span>
             </div>
           </div>
         </div>

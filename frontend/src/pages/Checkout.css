@@ -182,6 +182,131 @@
   margin: 20px 0;
 }
 
+/* Coupon Section */
+.coupon-section {
+  margin: 20px 0;
+}
+
+.coupon-section h3 {
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  color: #333;
+  font-weight: 600;
+}
+
+.coupon-input-group {
+  display: flex;
+  gap: 10px;
+}
+
+.coupon-input {
+  flex: 1;
+  padding: 12px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: border-color 0.3s;
+}
+
+.coupon-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.apply-coupon-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.apply-coupon-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.apply-coupon-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.applied-coupon {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  padding: 15px;
+  border-radius: 10px;
+  border: 2px solid #667eea;
+}
+
+.coupon-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.coupon-code-tag {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+}
+
+.coupon-discount {
+  color: #667eea;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.remove-coupon-btn {
+  width: 100%;
+  padding: 8px;
+  background: white;
+  color: #c62828;
+  border: 1px solid #c62828;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.remove-coupon-btn:hover {
+  background: #c62828;
+  color: white;
+}
+
+/* Summary Breakdown */
+.summary-breakdown {
+  margin: 15px 0;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  color: #666;
+  font-size: 1rem;
+}
+
+.discount-row {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.discount-amount {
+  color: #667eea;
+}
+
 .summary-total {
   display: flex;
   justify-content: space-between;

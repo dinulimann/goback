@@ -28,6 +28,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	reviewHandler := handlers.NewReviewHandler(db)
 	wishlistHandler := handlers.NewWishlistHandler(db)
 	dashboardHandler := handlers.NewDashboardHandler(db)
+	couponHandler := handlers.NewCouponHandler(db)
 
 	// Health check endpoint
 	router.GET("/health", healthHandler.Check)
@@ -63,6 +64,13 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 		reviews := v1.Group("/reviews")
 		{
 			reviews.GET("/product/:productId", reviewHandler.GetProductReviews)
+		}
+
+		// Public coupon validation route
+		coupons := v1.Group("/coupons")
+		{
+			coupons.POST("/validate", couponHandler.ValidateCoupon)
+			coupons.GET("/active", couponHandler.GetActiveCoupons)
 		}
 
 		// Protected routes (require authentication)
@@ -142,6 +150,17 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 			{
 				dashboard.GET("/stats", dashboardHandler.GetDashboardStats)
 				dashboard.GET("/revenue", dashboardHandler.GetRevenueStats)
+			}
+
+			// Coupon management routes (protected - admin only)
+			couponManagement := protected.Group("/coupons")
+			{
+				couponManagement.POST("", couponHandler.CreateCoupon)
+				couponManagement.GET("", couponHandler.GetAllCoupons)
+				couponManagement.GET("/:id", couponHandler.GetCouponByID)
+				couponManagement.PUT("/:id", couponHandler.UpdateCoupon)
+				couponManagement.DELETE("/:id", couponHandler.DeleteCoupon)
+				couponManagement.POST("/:id/toggle", couponHandler.ToggleActiveCoupon)
 			}
 		}
 	}

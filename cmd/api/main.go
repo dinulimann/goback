@@ -34,6 +34,7 @@ func main() {
 		&models.Profile{},
 		&models.Category{},
 		&models.Product{},
+		&models.Coupon{},
 		&models.Order{},
 		&models.OrderItem{},
 		&models.Review{},

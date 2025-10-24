@@ -44,6 +44,7 @@ function Navbar() {
                   <Link to="/admin/dashboard">Admin Dashboard</Link>
                   <Link to="/admin/products">Manage Products</Link>
                   <Link to="/admin/categories">Manage Categories</Link>
+                  <Link to="/admin/coupons">Manage Coupons</Link>
                 </div>
               </div>
               <button onClick={toggleCart} className="cart-btn">

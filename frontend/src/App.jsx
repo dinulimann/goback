@@ -13,6 +13,7 @@ import Profile from './pages/Profile'
 import AdminProducts from './pages/AdminProducts'
 import AdminCategories from './pages/AdminCategories'
 import AdminDashboard from './pages/AdminDashboard'
+import AdminCoupons from './pages/AdminCoupons'
 import './App.css'
 
 // Protected Route component
@@ -158,6 +159,14 @@ function App() {
           element={
             <ProtectedRoute>
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/coupons"
+          element={
+            <ProtectedRoute>
+              <AdminCoupons />
             </ProtectedRoute>
           }
         />
