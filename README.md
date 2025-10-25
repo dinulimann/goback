@@ -15,6 +15,7 @@ Fullstack E-Commerce aplikasi dengan Golang Backend dan React Frontend yang mode
 - **Product Management**
   - Browse products dengan category filtering
   - Product detail page
+  - Search & advanced filtering
   - Stock management
   - Image upload support
 - **Shopping Cart**
@@ -22,17 +23,29 @@ Fullstack E-Commerce aplikasi dengan Golang Backend dan React Frontend yang mode
   - Update quantities
   - Real-time cart count
   - Glassmorphism cart drawer
+- **Coupon/Promo System** 🆕
+  - Create & manage discount coupons
+  - Percentage or fixed amount discounts
+  - Minimum purchase requirements
+  - Max discount caps
+  - Usage limits & tracking
+  - Date-based validity
+  - Apply coupons at checkout
+  - Auto-calculate discounts
 - **Order Management**
-  - Checkout process
+  - Checkout process with coupon support
   - Order history
   - Order status tracking
   - Order details view
+  - Coupon discount tracking per order
 
 ### 👨‍💼 Admin Dashboard
 - Product CRUD operations
 - Category management
+- Coupon management 🆕
 - Order management
 - Sales analytics
+- Revenue tracking
 - User management
 
 ### 🎨 Modern UI/UX
@@ -56,6 +69,11 @@ goback/
 │   ├── product_handler.go
 │   ├── category_handler.go
 │   ├── order_handler.go
+│   ├── coupon_handler.go # Coupon management 🆕
+│   ├── review_handler.go
+│   ├── wishlist_handler.go
+│   ├── profile_handler.go
+│   ├── dashboard.go
 │   └── user_handler.go
 ├── middleware/           # HTTP middlewares
 │   ├── auth.go          # JWT middleware
@@ -63,9 +81,14 @@ goback/
 │   └── logger.go
 ├── models/               # Data models & repositories
 │   ├── user.go
+│   ├── profile.go
 │   ├── product.go
 │   ├── category.go
-│   └── order.go
+│   ├── coupon.go        # Coupon model 🆕
+│   ├── order.go
+│   ├── order_item.go
+│   ├── review.go
+│   └── wishlist.go
 ├── routes/               # Route definitions
 │   └── routes.go
 ├── frontend/             # React Frontend
@@ -79,13 +102,14 @@ goback/
 │   │   │   ├── Register.jsx
 │   │   │   ├── Products.jsx
 │   │   │   ├── ProductDetail.jsx
-│   │   │   ├── Checkout.jsx
+│   │   │   ├── Checkout.jsx          # With coupon support 🆕
 │   │   │   ├── Orders.jsx
 │   │   │   ├── Profile.jsx
 │   │   │   ├── Dashboard.jsx
 │   │   │   ├── AdminDashboard.jsx
 │   │   │   ├── AdminProducts.jsx
-│   │   │   └── AdminCategories.jsx
+│   │   │   ├── AdminCategories.jsx
+│   │   │   └── AdminCoupons.jsx      # Coupon management 🆕
 │   │   ├── context/
 │   │   │   ├── AuthContext.jsx
 │   │   │   └── CartContext.jsx
@@ -227,10 +251,43 @@ DELETE /api/categories/:id      - Delete category (Protected)
 
 ### Orders
 ```
-GET    /api/orders              - Get user orders (Protected)
-GET    /api/orders/:id          - Get order by ID (Protected)
-POST   /api/orders              - Create order (Protected)
-PUT    /api/orders/:id/status   - Update order status (Protected)
+GET    /api/v1/orders              - Get user orders (Protected)
+GET    /api/v1/orders/:id          - Get order by ID (Protected)
+POST   /api/v1/orders              - Create order with coupon (Protected) 🆕
+PUT    /api/v1/orders/:id/status   - Update order status (Protected)
+POST   /api/v1/orders/:id/cancel   - Cancel order (Protected)
+```
+
+### Coupons 🆕
+```
+# Public endpoints
+POST   /api/v1/coupons/validate    - Validate coupon code
+GET    /api/v1/coupons/active      - Get active coupons
+
+# Admin endpoints (Protected)
+POST   /api/v1/coupons             - Create coupon
+GET    /api/v1/coupons             - Get all coupons
+GET    /api/v1/coupons/:id         - Get coupon by ID
+PUT    /api/v1/coupons/:id         - Update coupon
+DELETE /api/v1/coupons/:id         - Delete coupon
+POST   /api/v1/coupons/:id/toggle  - Toggle active status
+```
+
+### Reviews
+```
+GET    /api/v1/reviews/product/:id - Get product reviews
+POST   /api/v1/reviews             - Create review (Protected)
+GET    /api/v1/reviews/my          - Get my reviews (Protected)
+PUT    /api/v1/reviews/:id         - Update review (Protected)
+DELETE /api/v1/reviews/:id         - Delete review (Protected)
+```
+
+### Wishlist
+```
+POST   /api/v1/wishlist            - Add to wishlist (Protected)
+GET    /api/v1/wishlist            - Get my wishlist (Protected)
+DELETE /api/v1/wishlist            - Remove from wishlist (Protected)
+POST   /api/v1/wishlist/check      - Check if in wishlist (Protected)
 ```
 
 ### Users
@@ -332,7 +389,9 @@ curl -X GET http://localhost:8080/api/auth/profile \
 
 ### 4. Checkout
 - Review cart items
+- **Apply discount coupons** 🆕
 - Input shipping information
+- **See discount breakdown** 🆕
 - Place order
 - Redirect ke order confirmation
 
@@ -345,8 +404,104 @@ curl -X GET http://localhost:8080/api/auth/profile \
 - Analytics dashboard dengan sales metrics
 - Manage products (CRUD operations)
 - Manage categories
+- **Manage coupons** 🆕
+  - Create coupons dengan percentage/fixed discount
+  - Set validity period & usage limits
+  - Track coupon usage statistics
+  - Toggle active/inactive status
 - View and update order status
 - User management
+
+## 🎟️ Coupon System Usage
+
+### Admin - Create Coupon
+
+1. **Login sebagai admin** dan navigate ke Admin → Manage Coupons
+2. **Click "Create New Coupon"**
+3. **Fill in coupon details:**
+   ```
+   Code: SAVE20
+   Description: Save 20% on all products
+   Discount Type: Percentage
+   Discount Value: 20
+   Min Purchase: 100000 (Rp 100,000)
+   Max Discount: 50000 (Rp 50,000 - optional)
+   Usage Limit: 100 (or 0 for unlimited)
+   Start Date: 2025-01-01 00:00
+   End Date: 2025-12-31 23:59
+   Active: ✓
+   ```
+4. **Click "Create Coupon"**
+
+### Customer - Apply Coupon at Checkout
+
+1. **Add products to cart** (min Rp 100,000 untuk contoh di atas)
+2. **Go to Checkout**
+3. **In Order Summary section**, enter code: `SAVE20`
+4. **Click "Apply"**
+5. **See discount breakdown:**
+   - Subtotal: Rp 150,000
+   - Discount (SAVE20): -Rp 30,000
+   - Total: Rp 120,000
+6. **Complete checkout** - order akan tersimpan dengan informasi kupon
+
+### Coupon Validation Rules
+
+Sistem akan otomatis validate:
+- ✅ Kode kupon valid & exists
+- ✅ Kupon masih aktif (is_active = true)
+- ✅ Tanggal masih dalam periode valid
+- ✅ Order amount memenuhi minimum purchase
+- ✅ Usage limit belum tercapai
+
+### Example API Request
+
+**Validate Coupon:**
+```bash
+curl -X POST http://localhost:8080/api/v1/coupons/validate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "code": "SAVE20",
+    "order_amount": 150000
+  }'
+
+# Response
+{
+  "valid": true,
+  "coupon": {
+    "id": 1,
+    "code": "SAVE20",
+    "discount_type": "percentage",
+    "discount_value": 20,
+    "min_purchase": 100000,
+    "max_discount": 50000
+  },
+  "order_amount": 150000,
+  "discount": 30000,
+  "final_amount": 120000
+}
+```
+
+**Create Order with Coupon:**
+```bash
+curl -X POST http://localhost:8080/api/v1/orders \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "shipping_address": "Jl. Contoh No. 123",
+    "shipping_city": "Jakarta",
+    "shipping_province": "DKI Jakarta",
+    "shipping_postal_code": "12345",
+    "payment_method": "bank_transfer",
+    "coupon_code": "SAVE20",
+    "items": [
+      {
+        "product_id": 1,
+        "quantity": 2
+      }
+    ]
+  }'
+```
 
 ## 🔧 Development Tips
 
@@ -373,7 +528,11 @@ psql goback_db
 \d users
 \d products
 \d categories
+\d coupons     # 🆕 New coupon table
 \d orders
+\d order_items
+\d reviews
+\d wishlists
 ```
 
 ### CORS Configuration
@@ -443,16 +602,19 @@ docker-compose up -d
 
 ## 🔜 Roadmap
 
+- [x] Product reviews & ratings ✅
+- [x] Wishlist functionality ✅
+- [x] Advanced search & filters ✅
+- [x] Admin analytics dashboard ✅
+- [x] Coupon/Promo system ✅ 🆕
 - [ ] Payment gateway integration (Midtrans/Stripe)
-- [ ] Product reviews & ratings
-- [ ] Wishlist functionality
-- [ ] Advanced search & filters
 - [ ] Email notifications
 - [ ] Product recommendations
-- [ ] Admin analytics dashboard
 - [ ] Multi-image upload for products
 - [ ] Social login (Google, Facebook)
 - [ ] Forgot password functionality
+- [ ] Export orders to CSV/Excel
+- [ ] Advanced coupon rules (first-time user, category-specific)
 - [ ] Unit & integration testing
 - [ ] Docker containerization
 - [ ] CI/CD pipeline
