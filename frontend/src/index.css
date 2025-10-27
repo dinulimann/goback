@@ -5,12 +5,12 @@
 }
 
 :root {
-  /* Modern Color Palette */
-  --primary-color: #6366f1;
-  --primary-dark: #4f46e5;
-  --primary-light: #818cf8;
-  --secondary-color: #ec4899;
-  --success-color: #10b981;
+  /* Modern Color Palette - Red-Brown Theme */
+  --primary-color: #8B2500;
+  --primary-dark: #6B1D00;
+  --primary-light: #C04000;
+  --secondary-color: #D2691E;
+  --success-color: #CD5C5C;
   --warning-color: #f59e0b;
   --danger-color: #ef4444;
 
@@ -52,7 +52,7 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #8B2500 0%, #C04000 100%);
   background-attachment: fixed;
   color: var(--gray-800);
   overflow-x: hidden;
@@ -68,9 +68,9 @@ body::before {
   width: 200%;
   height: 200%;
   background:
-    radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 40% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+    radial-gradient(circle at 20% 50%, rgba(139, 37, 0, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(210, 105, 30, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(205, 92, 92, 0.1) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
   animation: gradient-shift 20s ease infinite;

@@ -18,10 +18,10 @@
   height: 200%;
   background: conic-gradient(
     from 0deg at 50% 50%,
-    rgba(99, 102, 241, 0.1),
-    rgba(236, 72, 153, 0.1),
-    rgba(16, 185, 129, 0.1),
-    rgba(99, 102, 241, 0.1)
+    rgba(139, 37, 0, 0.1),
+    rgba(210, 105, 30, 0.1),
+    rgba(205, 92, 92, 0.1),
+    rgba(139, 37, 0, 0.1)
   );
   animation: rotate-bg 20s linear infinite;
   pointer-events: none;
@@ -43,7 +43,7 @@
   -webkit-backdrop-filter: blur(30px) saturate(180%);
   border-radius: 24px;
   box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25),
-              0 10px 40px rgba(99, 102, 241, 0.2),
+              0 10px 40px rgba(139, 37, 0, 0.2),
               inset 0 1px 0 rgba(255, 255, 255, 0.9);
   padding: 50px 45px;
   width: 100%;
@@ -73,9 +73,9 @@
   right: -2px;
   bottom: -2px;
   background: linear-gradient(135deg,
-    rgba(99, 102, 241, 0.3),
-    rgba(236, 72, 153, 0.3),
-    rgba(16, 185, 129, 0.3));
+    rgba(139, 37, 0, 0.3),
+    rgba(210, 105, 30, 0.3),
+    rgba(205, 92, 92, 0.3));
   border-radius: 24px;
   z-index: -1;
   opacity: 0.5;
@@ -92,13 +92,13 @@
   width: 90px;
   height: 90px;
   margin: 0 auto 25px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #8B2500 0%, #C04000 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4),
+  box-shadow: 0 15px 35px rgba(139, 37, 0, 0.4),
               0 5px 15px rgba(0, 0, 0, 0.1);
   animation: float-icon 3s ease-in-out infinite;
   position: relative;
@@ -117,7 +117,7 @@
   content: '';
   position: absolute;
   inset: -3px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #8B2500, #C04000);
   border-radius: 50%;
   opacity: 0.5;
   filter: blur(10px);
@@ -203,7 +203,7 @@
 }
 
 .auth-form label svg {
-  color: #667eea;
+  color: #8B2500;
 }
 
 .auth-form input {
@@ -220,10 +220,10 @@
 
 .auth-form input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #8B2500;
   background: white;
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15),
-              0 4px 12px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 4px rgba(139, 37, 0, 0.15),
+              0 4px 12px rgba(139, 37, 0, 0.1);
   transform: translateY(-2px);
 }
 
@@ -235,7 +235,7 @@
 .btn-primary {
   width: 100%;
   padding: 16px 28px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #8B2500 0%, #C04000 100%);
   background-size: 200% auto;
   color: white;
   border: none;
@@ -249,7 +249,7 @@
   justify-content: center;
   gap: 10px;
   margin-top: 10px;
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 20px rgba(139, 37, 0, 0.3);
   position: relative;
   overflow: hidden;
 }
@@ -269,7 +269,7 @@
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-3px);
-  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.5);
+  box-shadow: 0 15px 35px rgba(139, 37, 0, 0.5);
   background-position: right center;
 }
 
@@ -324,14 +324,14 @@
 }
 
 .link {
-  color: #667eea;
+  color: #8B2500;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.3s;
 }
 
 .link:hover {
-  color: #764ba2;
+  color: #C04000;
   text-decoration: underline;
 }
 

@@ -18,7 +18,7 @@
 
 .add-btn {
   padding: 12px 24px;
-  background: #4CAF50;
+  background: #A0522D;
   color: white;
   border: none;
   border-radius: 8px;
@@ -29,7 +29,7 @@
 }
 
 .add-btn:hover {
-  background: #45a049;
+  background: #8B4513;
 }
 
 .admin-table-container {
@@ -75,7 +75,7 @@
 .product-thumb-placeholder {
   width: 60px;
   height: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #8B2500 0%, #C04000 100%);
   color: white;
   display: flex;
   align-items: center;
@@ -217,7 +217,7 @@
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #4CAF50;
+  border-color: #A0522D;
 }
 
 .form-row {
@@ -260,12 +260,12 @@
 }
 
 .submit-btn {
-  background: #4CAF50;
+  background: #A0522D;
   color: white;
 }
 
 .submit-btn:hover {
-  background: #45a049;
+  background: #8B4513;
 }
 
 .cancel-btn {

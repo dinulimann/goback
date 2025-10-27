@@ -18,7 +18,7 @@
 
 .continue-shopping-btn {
   padding: 12px 24px;
-  background: #4CAF50;
+  background: #A0522D;
   color: white;
   text-decoration: none;
   border-radius: 8px;
@@ -27,7 +27,7 @@
 }
 
 .continue-shopping-btn:hover {
-  background: #45a049;
+  background: #8B4513;
 }
 
 .no-orders {
@@ -44,7 +44,7 @@
 .browse-btn {
   display: inline-block;
   padding: 15px 40px;
-  background: #4CAF50;
+  background: #A0522D;
   color: white;
   text-decoration: none;
   border-radius: 10px;
@@ -54,7 +54,7 @@
 }
 
 .browse-btn:hover {
-  background: #45a049;
+  background: #8B4513;
 }
 
 .orders-list {
@@ -147,7 +147,7 @@
 
 .item-price {
   font-weight: 600;
-  color: #4CAF50;
+  color: #A0522D;
   min-width: 120px;
   text-align: right;
 }
@@ -170,7 +170,7 @@
 }
 
 .total-amount {
-  color: #4CAF50;
+  color: #A0522D;
   font-size: 1.5rem;
 }
 
