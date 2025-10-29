@@ -30,7 +30,7 @@
   backdrop-filter: blur(30px) saturate(180%);
   -webkit-backdrop-filter: blur(30px) saturate(180%);
   box-shadow: -8px 0 40px rgba(0, 0, 0, 0.25),
-              -4px 0 20px rgba(139, 37, 0, 0.15);
+              -4px 0 20px rgba(147, 51, 234, 0.15);
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -54,10 +54,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 30px 25px;
-  border-bottom: 2px solid rgba(139, 37, 0, 0.1);
+  border-bottom: 2px solid rgba(147, 51, 234, 0.1);
   background: linear-gradient(135deg,
-    rgba(139, 37, 0, 0.03) 0%,
-    rgba(210, 105, 30, 0.03) 100%);
+    rgba(147, 51, 234, 0.03) 0%,
+    rgba(168, 85, 247, 0.03) 100%);
 }
 
 .cart-header h2 {
@@ -70,7 +70,7 @@
 }
 
 .close-btn {
-  background: rgba(139, 37, 0, 0.08);
+  background: rgba(147, 51, 234, 0.08);
   border: 2px solid transparent;
   font-size: 1.5rem;
   cursor: pointer;
@@ -117,7 +117,7 @@
 
 .browse-btn {
   padding: 12px 30px;
-  background: #A0522D;
+  background: #A855F7;
   color: white;
   border: none;
   border-radius: 8px;
@@ -127,7 +127,7 @@
 }
 
 .browse-btn:hover {
-  background: #8B4513;
+  background: #7C3AED;
 }
 
 .cart-items {
@@ -166,7 +166,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #8B2500 0%, #C04000 100%);
+  background: linear-gradient(135deg, #9333EA 0%, #C084FC 100%);
   color: white;
   font-size: 0.7rem;
   text-align: center;
@@ -183,7 +183,7 @@
 }
 
 .cart-item-price {
-  color: #A0522D;
+  color: #A855F7;
   font-weight: 600;
   font-size: 1.1rem;
   margin-bottom: 10px;
@@ -207,8 +207,8 @@
 }
 
 .cart-item-quantity button:hover:not(:disabled) {
-  border-color: #A0522D;
-  color: #A0522D;
+  border-color: #A855F7;
+  color: #A855F7;
 }
 
 .cart-item-quantity button:disabled {
@@ -255,14 +255,14 @@
 }
 
 .total-price {
-  color: #A0522D;
+  color: #A855F7;
   font-size: 1.5rem;
 }
 
 .checkout-btn {
   width: 100%;
   padding: 15px;
-  background: #A0522D;
+  background: #A855F7;
   color: white;
   border: none;
   border-radius: 10px;
@@ -273,7 +273,7 @@
 }
 
 .checkout-btn:hover {
-  background: #8B4513;
+  background: #7C3AED;
 }
 
 @media (max-width: 768px) {

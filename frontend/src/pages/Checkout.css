@@ -54,7 +54,7 @@
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #A0522D;
+  border-color: #A855F7;
 }
 
 .form-row {
@@ -80,7 +80,7 @@
 }
 
 .payment-option:hover {
-  border-color: #A0522D;
+  border-color: #A855F7;
   background: #f9f9f9;
 }
 
@@ -92,14 +92,14 @@
 }
 
 .payment-option input[type="radio"]:checked + span {
-  color: #A0522D;
+  color: #A855F7;
   font-weight: 600;
 }
 
 .place-order-btn {
   width: 100%;
   padding: 18px;
-  background: #A0522D;
+  background: #A855F7;
   color: white;
   border: none;
   border-radius: 10px;
@@ -111,7 +111,7 @@
 }
 
 .place-order-btn:hover:not(:disabled) {
-  background: #8B4513;
+  background: #7C3AED;
 }
 
 .place-order-btn:disabled {
@@ -173,7 +173,7 @@
 
 .item-price {
   font-weight: 600;
-  color: #A0522D;
+  color: #A855F7;
 }
 
 .summary-divider {
@@ -212,12 +212,12 @@
 
 .coupon-input:focus {
   outline: none;
-  border-color: #8B2500;
+  border-color: #9333EA;
 }
 
 .apply-coupon-btn {
   padding: 12px 24px;
-  background: linear-gradient(135deg, #8B2500 0%, #C04000 100%);
+  background: linear-gradient(135deg, #9333EA 0%, #C084FC 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -229,7 +229,7 @@
 
 .apply-coupon-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(139, 37, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4);
 }
 
 .apply-coupon-btn:disabled {
@@ -238,10 +238,10 @@
 }
 
 .applied-coupon {
-  background: linear-gradient(135deg, rgba(139, 37, 0, 0.1) 0%, rgba(192, 64, 0, 0.1) 100%);
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(192, 132, 252, 0.1) 100%);
   padding: 15px;
   border-radius: 10px;
-  border: 2px solid #8B2500;
+  border: 2px solid #9333EA;
 }
 
 .coupon-info {
@@ -252,7 +252,7 @@
 }
 
 .coupon-code-tag {
-  background: linear-gradient(135deg, #8B2500 0%, #C04000 100%);
+  background: linear-gradient(135deg, #9333EA 0%, #C084FC 100%);
   color: white;
   padding: 6px 12px;
   border-radius: 6px;
@@ -262,7 +262,7 @@
 }
 
 .coupon-discount {
-  color: #8B2500;
+  color: #9333EA;
   font-weight: 700;
   font-size: 1.1rem;
 }
@@ -299,12 +299,12 @@
 }
 
 .discount-row {
-  color: #8B2500;
+  color: #9333EA;
   font-weight: 600;
 }
 
 .discount-amount {
-  color: #8B2500;
+  color: #9333EA;
 }
 
 .summary-total {
@@ -317,7 +317,7 @@
 }
 
 .total-amount {
-  color: #A0522D;
+  color: #A855F7;
   font-size: 1.8rem;
 }
 
