@@ -29,6 +29,7 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	wishlistHandler := handlers.NewWishlistHandler(db)
 	dashboardHandler := handlers.NewDashboardHandler(db)
 	couponHandler := handlers.NewCouponHandler(db)
+	addressHandler := handlers.NewAddressHandler(db)
 
 	// Health check endpoint
 	router.GET("/health", healthHandler.Check)
@@ -161,6 +162,18 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 				couponManagement.PUT("/:id", couponHandler.UpdateCoupon)
 				couponManagement.DELETE("/:id", couponHandler.DeleteCoupon)
 				couponManagement.POST("/:id/toggle", couponHandler.ToggleActiveCoupon)
+			}
+
+			// Address routes (protected)
+			addresses := protected.Group("/addresses")
+			{
+				addresses.POST("", addressHandler.CreateAddress)
+				addresses.GET("", addressHandler.GetMyAddresses)
+				addresses.GET("/default", addressHandler.GetDefaultAddress)
+				addresses.GET("/:id", addressHandler.GetAddress)
+				addresses.PUT("/:id", addressHandler.UpdateAddress)
+				addresses.DELETE("/:id", addressHandler.DeleteAddress)
+				addresses.POST("/:id/set-default", addressHandler.SetDefaultAddress)
 			}
 		}
 	}
