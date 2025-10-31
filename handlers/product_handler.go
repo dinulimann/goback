@@ -19,9 +19,7 @@ func NewProductHandler(db *gorm.DB) *ProductHandler {
 	}
 }
 
-// GetAllProducts retrieves all products with optional filters
 func (h *ProductHandler) GetAllProducts(c *gin.Context) {
-	// Check for query parameters
 	search := c.Query("search")
 	categoryIDStr := c.Query("category_id")
 	minPriceStr := c.Query("min_price")
