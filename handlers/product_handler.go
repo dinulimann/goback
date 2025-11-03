@@ -19,7 +19,7 @@ func NewProductHandler(db *gorm.DB) *ProductHandler {
 	}
 }
 
-// product ..goback
+// product ..goback gofront
 func (h *ProductHandler) GetAllProducts(c *gin.Context) {
 	search := c.Query("search")
 	categoryIDStr := c.Query("category_id")
