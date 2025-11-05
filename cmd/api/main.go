@@ -40,6 +40,7 @@ func main() {
 		&models.OrderItem{},
 		&models.Review{},
 		&models.Wishlist{},
+		&models.Payment{},
 	); err != nil {
 		log.Fatal("Failed to migrate database:", err)
 	}
@@ -53,8 +54,8 @@ func main() {
 	// Initialize router
 	router := gin.Default()
 
-	// Setup routes with database
-	routes.SetupRoutes(router, db)
+	// Setup routes with database and config
+	routes.SetupRoutes(router, db, cfg)
 
 	// Start server
 	port := cfg.Port

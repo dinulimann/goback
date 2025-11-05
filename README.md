@@ -23,7 +23,7 @@ Fullstack E-Commerce aplikasi dengan Golang Backend dan React Frontend yang mode
   - Update quantities
   - Real-time cart count
   - Glassmorphism cart drawer
-- **Coupon/Promo System** 🆕
+- **Coupon/Promo System**
   - Create & manage discount coupons
   - Percentage or fixed amount discounts
   - Minimum purchase requirements
@@ -32,17 +32,28 @@ Fullstack E-Commerce aplikasi dengan Golang Backend dan React Frontend yang mode
   - Date-based validity
   - Apply coupons at checkout
   - Auto-calculate discounts
+- **Payment Gateway Integration** 🆕
+  - Midtrans payment gateway
+  - Multiple payment methods (cards, bank transfer, e-wallet)
+  - Secure Snap payment page
+  - Real-time payment notifications
+  - Payment status tracking
+  - Virtual account numbers
+  - Automatic order status updates
 - **Order Management**
   - Checkout process with coupon support
+  - Online payment via Midtrans 🆕
   - Order history
   - Order status tracking
   - Order details view
+  - Payment status tracking 🆕
   - Coupon discount tracking per order
 
 ### 👨‍💼 Admin Dashboard
 - Product CRUD operations
 - Category management
-- Coupon management 🆕
+- Coupon management
+- Payment monitoring 🆕
 - Order management
 - Sales analytics
 - Revenue tracking
@@ -69,7 +80,8 @@ goback/
 │   ├── product_handler.go
 │   ├── category_handler.go
 │   ├── order_handler.go
-│   ├── coupon_handler.go # Coupon management 🆕
+│   ├── coupon_handler.go # Coupon management
+│   ├── payment_handler.go # Payment gateway 🆕
 │   ├── review_handler.go
 │   ├── wishlist_handler.go
 │   ├── profile_handler.go
@@ -84,7 +96,8 @@ goback/
 │   ├── profile.go
 │   ├── product.go
 │   ├── category.go
-│   ├── coupon.go        # Coupon model 🆕
+│   ├── coupon.go        # Coupon model
+│   ├── payment.go       # Payment model 🆕
 │   ├── order.go
 │   ├── order_item.go
 │   ├── review.go
@@ -182,6 +195,10 @@ DB_SSLMODE=disable
 
 # JWT Secret (WAJIB GANTI DI PRODUCTION!)
 JWT_SECRET=your-super-secret-jwt-key-change-this
+
+# Midtrans Payment Gateway 🆕
+MIDTRANS_SERVER_KEY=your-midtrans-server-key
+MIDTRANS_CLIENT_KEY=your-midtrans-client-key
 ```
 
 ```bash
@@ -253,12 +270,24 @@ DELETE /api/categories/:id      - Delete category (Protected)
 ```
 GET    /api/v1/orders              - Get user orders (Protected)
 GET    /api/v1/orders/:id          - Get order by ID (Protected)
-POST   /api/v1/orders              - Create order with coupon (Protected) 🆕
+POST   /api/v1/orders              - Create order with coupon (Protected)
 PUT    /api/v1/orders/:id/status   - Update order status (Protected)
 POST   /api/v1/orders/:id/cancel   - Cancel order (Protected)
 ```
 
-### Coupons 🆕
+### Payments 🆕
+```
+# Protected endpoints
+POST   /api/v1/payments/snap-token       - Create Midtrans Snap payment token
+GET    /api/v1/payments/order/:orderId   - Get payment by order ID
+GET    /api/v1/payments/status/:transactionId - Check payment status
+GET    /api/v1/payments/all              - Get all payments (Admin only)
+
+# Public webhook endpoint
+POST   /api/v1/payments/notification     - Midtrans payment notification callback
+```
+
+### Coupons
 ```
 # Public endpoints
 POST   /api/v1/coupons/validate    - Validate coupon code
@@ -387,12 +416,15 @@ curl -X GET http://localhost:8080/api/auth/profile \
 - Update quantities atau remove items
 - Real-time cart count badge
 
-### 4. Checkout
+### 4. Checkout & Payment
 - Review cart items
-- **Apply discount coupons** 🆕
+- Apply discount coupons
 - Input shipping information
-- **See discount breakdown** 🆕
+- See discount breakdown
 - Place order
+- **Choose payment method** 🆕
+- **Pay via Midtrans** (cards, bank transfer, e-wallet) 🆕
+- **Get payment instructions** (VA number, etc.) 🆕
 - Redirect ke order confirmation
 
 ### 5. Order History
@@ -411,6 +443,215 @@ curl -X GET http://localhost:8080/api/auth/profile \
   - Toggle active/inactive status
 - View and update order status
 - User management
+
+## 💳 Payment Gateway Integration (Midtrans) 🆕
+
+GoBack sekarang terintegrasi dengan **Midtrans Payment Gateway** untuk memproses pembayaran secara online dengan aman.
+
+### Supported Payment Methods
+
+Melalui Midtrans, customer dapat membayar menggunakan:
+- **Credit/Debit Card** (Visa, Mastercard, JCB, Amex)
+- **Bank Transfer** (BCA, BNI, BRI, Mandiri, Permata)
+- **E-Wallet** (GoPay, ShopeePay, QRIS)
+- **Convenience Store** (Alfamart, Indomaret)
+- **Cardless Credit** (Akulaku, Kredivo)
+
+### Setup Midtrans
+
+1. **Daftar akun Midtrans** di [https://dashboard.midtrans.com/register](https://dashboard.midtrans.com/register)
+
+2. **Dapatkan API Keys:**
+   - Login ke Midtrans Dashboard
+   - Go to **Settings** → **Access Keys**
+   - Copy **Server Key** dan **Client Key**
+
+3. **Update file .env:**
+   ```env
+   # Untuk development/testing - gunakan Sandbox keys
+   MIDTRANS_SERVER_KEY=SB-Mid-server-xxxxxxxxxxxxx
+   MIDTRANS_CLIENT_KEY=SB-Mid-client-xxxxxxxxxxxxx
+
+   # Untuk production - gunakan Production keys
+   MIDTRANS_SERVER_KEY=Mid-server-xxxxxxxxxxxxx
+   MIDTRANS_CLIENT_KEY=Mid-client-xxxxxxxxxxxxx
+   ```
+
+4. **Set Notification URL di Midtrans Dashboard:**
+   - Go to **Settings** → **Configuration**
+   - Set **Payment Notification URL** ke: `https://your-domain.com/api/v1/payments/notification`
+   - Untuk development, gunakan ngrok atau tools serupa untuk expose localhost
+
+### Payment Flow
+
+1. **Customer checkout** dan create order
+2. **Backend creates Snap Token** melalui Midtrans API
+3. **Frontend displays payment page** menggunakan Snap token
+4. **Customer chooses payment method** dan completes payment
+5. **Midtrans sends notification** ke backend webhook
+6. **Backend updates** order dan payment status
+7. **Customer sees** order confirmation
+
+### API Usage Examples
+
+**1. Create Payment Token (after creating order):**
+
+```bash
+curl -X POST http://localhost:8080/api/v1/payments/snap-token \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "order_id": 1
+  }'
+
+# Response
+{
+  "message": "Payment token created successfully",
+  "snap_token": "66e4fa55-fdac-4ef9-91b5-733b97d1b862",
+  "redirect_url": "https://app.sandbox.midtrans.com/snap/v3/redirection/66e4fa55-fdac...",
+  "transaction_id": "ORDER-1-1704123456"
+}
+```
+
+**2. Check Payment Status:**
+
+```bash
+curl -X GET http://localhost:8080/api/v1/payments/status/ORDER-1-1704123456 \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Response
+{
+  "message": "Payment status retrieved successfully",
+  "payment_status": "paid",
+  "transaction_id": "ORDER-1-1704123456",
+  "gross_amount": 150000,
+  "payment_method": "bank_transfer",
+  "va_number": "70012345678901",
+  "bank": "bca",
+  "paid_at": "2025-01-01T10:30:00Z"
+}
+```
+
+**3. Get Payment by Order ID:**
+
+```bash
+curl -X GET http://localhost:8080/api/v1/payments/order/1 \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+
+# Response
+{
+  "message": "Payment retrieved successfully",
+  "payment": {
+    "id": 1,
+    "order_id": 1,
+    "transaction_id": "ORDER-1-1704123456",
+    "payment_method": "bank_transfer",
+    "payment_status": "paid",
+    "gross_amount": 150000,
+    "va_number": "70012345678901",
+    "bank": "bca",
+    "paid_at": "2025-01-01T10:30:00Z"
+  }
+}
+```
+
+### Payment Status Flow
+
+```
+pending → paid (successful)
+pending → failed (declined/expired)
+pending → expired (timeout after 24h)
+```
+
+### Database Schema
+
+**Table: payments**
+```sql
+- id (uint, primary key)
+- order_id (uint, foreign key to orders)
+- payment_method (string) - midtrans, bank_transfer, cod
+- transaction_id (string, unique) - Midtrans transaction ID
+- snap_token (text) - Midtrans Snap token
+- gross_amount (decimal) - Total payment amount
+- payment_status (string) - pending, paid, failed, expired
+- payment_provider (string) - midtrans, manual
+- transaction_status (string) - Midtrans specific status
+- fraud_status (string) - accept, challenge, deny
+- va_number (string) - Virtual Account number
+- bank (string) - BCA, BNI, Mandiri, etc.
+- paid_at (timestamp)
+- expired_at (timestamp)
+- metadata (text) - Additional JSON data
+- error_message (text)
+- created_at, updated_at, deleted_at
+```
+
+### Testing Payment
+
+**Sandbox Test Cards (Development):**
+
+```
+Card Number: 4811 1111 1111 1114
+CVV: 123
+Exp: 01/25
+OTP: 112233
+
+Card Number: 5573 3810 0000 0009 (3D Secure)
+CVV: 123
+Exp: 01/25
+OTP: 112233
+```
+
+**Sandbox Virtual Account:**
+- Simulation akan otomatis sukses di dashboard Midtrans Sandbox
+- Atau gunakan simulator: [https://simulator.sandbox.midtrans.com/](https://simulator.sandbox.midtrans.com/)
+
+### Frontend Integration (Coming Soon)
+
+Frontend React component untuk integrate dengan Midtrans Snap:
+
+```jsx
+// Example payment flow
+const handlePayment = async (orderId) => {
+  // 1. Get snap token from backend
+  const response = await api.post('/payments/snap-token', { order_id: orderId });
+  const { snap_token } = response.data;
+
+  // 2. Load Midtrans Snap script
+  const script = document.createElement('script');
+  script.src = 'https://app.sandbox.midtrans.com/snap/snap.js';
+  script.setAttribute('data-client-key', process.env.REACT_APP_MIDTRANS_CLIENT_KEY);
+  document.body.appendChild(script);
+
+  // 3. Open Snap payment page
+  window.snap.pay(snap_token, {
+    onSuccess: (result) => {
+      console.log('Payment success:', result);
+      // Redirect to order success page
+    },
+    onPending: (result) => {
+      console.log('Payment pending:', result);
+      // Show pending payment instructions
+    },
+    onError: (result) => {
+      console.log('Payment error:', result);
+      // Show error message
+    },
+    onClose: () => {
+      console.log('Payment popup closed');
+    }
+  });
+};
+```
+
+### Security Best Practices
+
+1. **NEVER expose Server Key** di frontend atau commit ke git
+2. **Always validate** notification dari Midtrans di backend
+3. **Use HTTPS** untuk production deployment
+4. **Verify signature** dari Midtrans notification (recommended)
+5. **Set proper CORS** untuk production domain
+6. **Monitor failed transactions** di Midtrans dashboard
 
 ## 🎟️ Coupon System Usage
 
@@ -606,8 +847,8 @@ docker-compose up -d
 - [x] Wishlist functionality ✅
 - [x] Advanced search & filters ✅
 - [x] Admin analytics dashboard ✅
-- [x] Coupon/Promo system ✅ 🆕
-- [ ] Payment gateway integration (Midtrans/Stripe)
+- [x] Coupon/Promo system ✅
+- [x] Payment gateway integration (Midtrans) ✅ 🆕
 - [ ] Email notifications
 - [ ] Product recommendations
 - [ ] Multi-image upload for products

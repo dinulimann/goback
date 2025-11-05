@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/dinulimann/goback/config"
 	"github.com/dinulimann/goback/handlers"
 	"github.com/dinulimann/goback/middleware"
 	"github.com/dinulimann/goback/models"
@@ -9,7 +10,7 @@ import (
 )
 
 // SetupRoutes configures all application routes
-func SetupRoutes(router *gin.Engine, db *gorm.DB) {
+func SetupRoutes(router *gin.Engine, db *gorm.DB, cfg *config.Config) {
 	// Apply global middleware
 	router.Use(middleware.CORS())
 	router.Use(middleware.Logger())
@@ -30,6 +31,11 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 	dashboardHandler := handlers.NewDashboardHandler(db)
 	couponHandler := handlers.NewCouponHandler(db)
 	addressHandler := handlers.NewAddressHandler(db)
+
+	// Initialize payment repository and handler
+	paymentRepo := models.NewPaymentRepository(db)
+	orderRepo := models.NewOrderRepository(db)
+	paymentHandler := handlers.NewPaymentHandler(paymentRepo, orderRepo, cfg)
 
 	// Health check endpoint
 	router.GET("/health", healthHandler.Check)
@@ -175,6 +181,18 @@ func SetupRoutes(router *gin.Engine, db *gorm.DB) {
 				addresses.DELETE("/:id", addressHandler.DeleteAddress)
 				addresses.POST("/:id/set-default", addressHandler.SetDefaultAddress)
 			}
+
+			// Payment routes (protected)
+			payments := protected.Group("/payments")
+			{
+				payments.POST("/snap-token", paymentHandler.CreateSnapToken)
+				payments.GET("/order/:orderId", paymentHandler.GetPaymentByOrderID)
+				payments.GET("/status/:transactionId", paymentHandler.GetPaymentStatus)
+				payments.GET("/all", paymentHandler.GetAllPayments) // Admin only
+			}
 		}
+
+		// Payment notification webhook (public - for Midtrans callback)
+		v1.POST("/payments/notification", paymentHandler.MidtransNotification)
 	}
 }

@@ -42,6 +42,8 @@ type Order struct {
 	User       User        `json:"user,omitempty" gorm:"foreignKey:UserID"`
 	Coupon     *Coupon     `json:"coupon,omitempty" gorm:"foreignKey:CouponID"`
 	OrderItems []OrderItem `json:"order_items,omitempty" gorm:"foreignKey:OrderID"`
+	Items      []OrderItem `json:"items,omitempty" gorm:"foreignKey:OrderID"` // Alias for OrderItems
+	Payment    *Payment    `json:"payment,omitempty" gorm:"foreignKey:OrderID"` // Payment relation
 }
 
 // OrderInput for creating order
