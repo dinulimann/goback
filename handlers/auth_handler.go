@@ -146,10 +146,7 @@ func (h *AuthHandler) GetProfile(c *gin.Context) {
 
 // generateToken creates a JWT token
 func generateToken(userID uint, email string) (string, error) {
-	jwtSecret := os.Getenv("JWT_SECRET")
-	if jwtSecret == "" {
-		jwtSecret = "your-secret-key-change-in-production"
-	}
+	jwtSecret := os.Getenv("JWT_SECRET") // checked at startup in cmd/api/main.go
 
 	claims := jwt.MapClaims{
 		"user_id": userID,

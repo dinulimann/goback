@@ -26,7 +26,7 @@ func NewConfig() *Config {
 		DBUser:            getEnv("DB_USER", "postgres"),
 		DBPassword:        getEnv("DB_PASSWORD", ""),
 		DBName:            getEnv("DB_NAME", "goback"),
-		JWTSecret:         getEnv("JWT_SECRET", "your-secret-key"),
+		JWTSecret:         getEnv("JWT_SECRET", ""),
 		MidtransServerKey: getEnv("MIDTRANS_SERVER_KEY", ""),
 		MidtransClientKey: getEnv("MIDTRANS_CLIENT_KEY", ""),
 	}

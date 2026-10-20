@@ -31,10 +31,7 @@ func JWTAuth() gin.HandlerFunc {
 		tokenString := parts[1]
 
 		// Parse and validate token
-		jwtSecret := os.Getenv("JWT_SECRET")
-		if jwtSecret == "" {
-			jwtSecret = "your-secret-key-change-in-production"
-		}
+		jwtSecret := os.Getenv("JWT_SECRET") // checked at startup in cmd/api/main.go
 
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 			// Validate signing method

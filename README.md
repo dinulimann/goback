@@ -2,6 +2,20 @@
 
 Fullstack E-Commerce aplikasi dengan Golang Backend dan React Frontend yang modern dan responsive.
 
+## Overview (English)
+
+Full-stack e-commerce platform with a **Go (Gin + GORM) REST API** and a **React (Vite)** storefront and admin dashboard, backed by **PostgreSQL**.
+
+- **Auth:** register/login with bcrypt-hashed passwords, JWT-protected routes, profile management. The API refuses to start without a `JWT_SECRET`.
+- **Shop:** product catalog with categories, cart, coupons/promo codes, shipping addresses, orders.
+- **Payments:** **Midtrans Snap** integration (sandbox and production), with payment status tracking.
+- **Admin dashboard:** product, category, coupon, order and user management; payment monitoring; sales and revenue analytics.
+
+Setup instructions and the full API reference below are in Indonesian; the code and endpoints are self-explanatory.
+
+---
+
+
 ## ✨ Fitur Utama
 
 ### 🔐 Authentication & Authorization

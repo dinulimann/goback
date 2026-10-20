@@ -20,6 +20,12 @@ func main() {
 	// Initialize config
 	cfg := config.NewConfig()
 
+	// Refuse to start without a signing key: a built-in default would let
+	// anyone who read this code forge login tokens.
+	if cfg.JWTSecret == "" {
+		log.Fatal("JWT_SECRET is not set (see .env.example)")
+	}
+
 	// Connect to database
 	if err := database.Connect(cfg); err != nil {
 		log.Fatal("Failed to connect to database:", err)
